@@ -29,7 +29,20 @@ namespace OESK
         private SHA256 sha256Hash = SHA256.Create();
         private MySQLiteDbContext conn = new MySQLiteDbContext();
         public MainWindow()
-        { InitializeComponent(); }
+        {
+            InitializeComponent();
+            /*
+            try
+            {
+                var items = new List<int>();
+                for (int i = 1; i < 12; i++)
+                { items.Add(i); }
+                ListBox1.ItemsSource = items;
+            }
+            catch(Exception e)
+            { MessageBox.Show("init ex: " + e.Message); }
+            */
+        }
 
         private string buildHashString(byte[] data)
         {
@@ -115,8 +128,8 @@ namespace OESK
             timeSpan = stopWatch.Elapsed;
             return buildHashString(data);
         }
-
-        private void BtnStart_Click(object sender, RoutedEventArgs e)
+        /*
+        private void someOldStartFuntion_Click(object sender, RoutedEventArgs e)
         {
             var begin = DateTime.Now;
             TimeSpan MD5Time;
@@ -144,7 +157,7 @@ namespace OESK
             //SHA256TxtBlockTime.Text = String.Format("{0:mm\\:ss\\:fffffff}", timeOfCalculation);
             SaveTestToDatabase(ref IDText, ref MD5Time, ref SHA1Time, ref SHA256Time);
             TxtBlockFullTime.Text = (DateTime.Now - begin).ToString();
-        }
+        }*/
 
         private void SaveTestToDatabase(ref int IDText, ref TimeSpan MD5Time, ref TimeSpan SHA1Time, ref TimeSpan SHA256Time)
         {
@@ -180,34 +193,77 @@ namespace OESK
             return IDText;
         }
 
+        private double StandardDeviation(IEnumerable<TimeSpan> values)
+        {
+            double avgTicks = values.Average(timeSpan => timeSpan.Ticks);
+            return Math.Sqrt(values.Average(v => Math.Pow(v.Ticks - avgTicks, 2)));
+        }
+
         private void BtnStartStandardTest_Click(object sender, RoutedEventArgs e)
         {
             var begin = DateTime.Now;
+            var MD5Times = new List<TimeSpan>();
+            var SHA1Times = new List<TimeSpan>();
+            var SHA256Times = new List<TimeSpan>();
             try
             {
-                for (int i = 0; i < 7; i++)
+                var listOfCalcResults = new List<TableCalcParams>();
+                for (int i = 0; i < 3; i++)
                 {
                     //text += new StringBuilder(text.Length * 9).Insert(0, text, 9).ToString();
                     //text = string.Empty;
-                    var text = new String('A', Convert.ToInt32(Math.Pow(10, i)));
+                    var textLength = Convert.ToInt32(Math.Pow(10, i));
+                    var text = new String('A', textLength);
                     var IDText = SearchForTextInDatabaseAddIfNotExists(text);
 
+                    TimeSpan MD5Time;
+                    TimeSpan SHA1Time;
+                    TimeSpan SHA256Time;
                     for (int j = 0; j < 100; j++)
                     {
-                        TimeSpan MD5Time;
-                        TimeSpan SHA1Time;
-                        TimeSpan SHA256Time;
                         GetMd5Hash(ref text, out MD5Time);
                         GetSHA1Hash(ref text, out SHA1Time);
                         GetSHA256Hash(ref text, out SHA256Time);
-                        SaveTestToDatabase(ref IDText, ref MD5Time, ref SHA1Time, ref SHA256Time);
+                        MD5Times.Add(MD5Time);
+                        SHA1Times.Add(SHA1Time);
+                        SHA256Times.Add(SHA256Time);
+                        //SaveTestToDatabase(ref IDText, ref MD5Time, ref SHA1Time, ref SHA256Time);
                     }
+                    listOfCalcResults.Add(new TableCalcParams()
+                    {
+                        Name = "MD5",
+                        Length = textLength,
+                        Min = MD5Times.Min().ToString(),
+                        Avg = MD5Times.Average(timeSpan => timeSpan.Ticks).ToString(),
+                        Max = MD5Times.Max().ToString(),
+                        StdDev = StandardDeviation(MD5Times)
+                    });
+                    listOfCalcResults.Add(new TableCalcParams()
+                    {
+                        Name = "SHA1",
+                        Length = textLength,
+                        Min = SHA1Times.Min().ToString(),
+                        Avg = SHA1Times.Average(timeSpan => timeSpan.Ticks).ToString(),
+                        Max = SHA1Times.Max().ToString(),
+                        StdDev = StandardDeviation(SHA1Times)
+                    });
+                    listOfCalcResults.Add(new TableCalcParams()
+                    {
+                        Name = "SHA256",
+                        Length = textLength,
+                        Min = SHA256Times.Min().ToString(),
+                        Avg = SHA256Times.Average(timeSpan => timeSpan.Ticks).ToString(),
+                        Max = SHA256Times.Max().ToString(),
+                        StdDev = StandardDeviation(SHA256Times)
+                    });
                 }
+                ListViewMain.ItemsSource = listOfCalcResults;
+
                 TxtBlockFullTime.Text = (DateTime.Now - begin).ToString();
                 MessageBox.Show("Test zakończony poprawnie.");
             }
             catch (Exception ex)
-            { MessageBox.Show(ex.Message); MessageBox.Show(ex.InnerException.Message); }
+            { MessageBox.Show("Error: " + ex.Message); MessageBox.Show(ex.InnerException.Message); }
         }
     }
 }

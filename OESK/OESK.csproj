@@ -91,6 +91,7 @@
     </ApplicationDefinition>
     <Compile Include="MySQLiteDbContext.cs" />
     <Compile Include="SQLiteConfiguration.cs" />
+    <Compile Include="TableCalcParams.cs" />
     <Compile Include="TableTestResult.cs" />
     <Compile Include="TableText.cs" />
     <Page Include="MainWindow.xaml">
