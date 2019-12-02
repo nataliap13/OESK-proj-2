@@ -193,12 +193,6 @@ namespace OESK
             return IDText;
         }
 
-        private double StandardDeviation(IEnumerable<TimeSpan> values)
-        {
-            double avgTicks = values.Average(timeSpan => timeSpan.Ticks);
-            return Math.Sqrt(values.Average(v => Math.Pow(v.Ticks - avgTicks, 2)));
-        }
-
         private void BtnStartStandardTest_Click(object sender, RoutedEventArgs e)
         {
             var begin = DateTime.Now;
@@ -229,33 +223,9 @@ namespace OESK
                         SHA256Times.Add(SHA256Time);
                         //SaveTestToDatabase(ref IDText, ref MD5Time, ref SHA1Time, ref SHA256Time);
                     }
-                    listOfCalcResults.Add(new TableCalcParams()
-                    {
-                        Name = "MD5",
-                        Length = textLength,
-                        Min = MD5Times.Min().ToString(),
-                        Avg = MD5Times.Average(timeSpan => timeSpan.Ticks).ToString(),
-                        Max = MD5Times.Max().ToString(),
-                        StdDev = StandardDeviation(MD5Times)
-                    });
-                    listOfCalcResults.Add(new TableCalcParams()
-                    {
-                        Name = "SHA1",
-                        Length = textLength,
-                        Min = SHA1Times.Min().ToString(),
-                        Avg = SHA1Times.Average(timeSpan => timeSpan.Ticks).ToString(),
-                        Max = SHA1Times.Max().ToString(),
-                        StdDev = StandardDeviation(SHA1Times)
-                    });
-                    listOfCalcResults.Add(new TableCalcParams()
-                    {
-                        Name = "SHA256",
-                        Length = textLength,
-                        Min = SHA256Times.Min().ToString(),
-                        Avg = SHA256Times.Average(timeSpan => timeSpan.Ticks).ToString(),
-                        Max = SHA256Times.Max().ToString(),
-                        StdDev = StandardDeviation(SHA256Times)
-                    });
+                    listOfCalcResults.Add(new TableCalcParams("MD5", textLength, MD5Times));
+                    listOfCalcResults.Add(new TableCalcParams("SHA1", textLength, SHA1Times));
+                    listOfCalcResults.Add(new TableCalcParams("SHA256", textLength, SHA256Times));
                 }
                 ListViewMain.ItemsSource = listOfCalcResults;
 
