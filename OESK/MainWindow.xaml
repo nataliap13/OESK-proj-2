@@ -13,12 +13,12 @@
         <ListView Name="ListViewMain" HorizontalAlignment="Left" Width="622" Height="224" Margin="10,35,0,0" VerticalAlignment="Top">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Funkcja" Width="50" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Funkcja" DisplayMemberBinding="{Binding Name}" />
                     <GridViewColumn Header="Długość tekstu" DisplayMemberBinding="{Binding Length}" />
-                    <GridViewColumn Header="Min" Width="100" DisplayMemberBinding="{Binding Min}" />
-                    <GridViewColumn Header="Avg" Width="100" DisplayMemberBinding="{Binding Avg}" />
-                    <GridViewColumn Header="Max" Width="100" DisplayMemberBinding="{Binding Max}" />
-                    <GridViewColumn Header="Odch. Std." Width="100" DisplayMemberBinding="{Binding StdDev}" />
+                    <GridViewColumn Header="Min" DisplayMemberBinding="{Binding Min}" />
+                    <GridViewColumn Header="Avg" DisplayMemberBinding="{Binding Avg}" />
+                    <GridViewColumn Header="Max" DisplayMemberBinding="{Binding Max}" />
+                    <GridViewColumn Header="Odch. Std." DisplayMemberBinding="{Binding StdDev}" />
                 </GridView>
             </ListView.View>
         </ListView>

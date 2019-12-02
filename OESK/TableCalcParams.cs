@@ -13,22 +13,26 @@ namespace OESK
         public string Min { get; private set; }
         public string Avg { get; private set; }
         public string Max { get; private set; }
-        public double StdDev { get; private set; }
+        public string StdDev { get; private set; }
 
         public TableCalcParams(string functionName, int textLength, List<TimeSpan> listOfTimes)
         {
             Name = functionName;
             Length = textLength;
-            Min = listOfTimes.Min().ToString();
-            Avg = listOfTimes.Average(timeSpan => timeSpan.Ticks).ToString();
-            Max = listOfTimes.Max().ToString();
+            Min = TimeSpanConverter.ToSecondsMiliseconds(listOfTimes.Min());
+            Avg = TimeSpanConverter.ToSecondsMiliseconds(DoubleTicksToTimespan(listOfTimes.Average(timeSpan => timeSpan.Ticks)));
+            Max = TimeSpanConverter.ToSecondsMiliseconds(listOfTimes.Max());
             StdDev = StandardDeviation(listOfTimes);
         }
 
-        public static double StandardDeviation(IEnumerable<TimeSpan> values)
+        public static string StandardDeviation(IEnumerable<TimeSpan> values)
         {
             double avgTicks = values.Average(timeSpan => timeSpan.Ticks);
-            return Math.Sqrt(values.Average(v => Math.Pow(v.Ticks - avgTicks, 2)));
+            var stdDevInTicks = Math.Sqrt(values.Average(v => Math.Pow(v.Ticks - avgTicks, 2)));
+            return TimeSpanConverter.ToSecondsMiliseconds(
+                DoubleTicksToTimespan(stdDevInTicks));
         }
+        private static TimeSpan DoubleTicksToTimespan(double value)
+        { return new TimeSpan(Convert.ToInt64(value)); }
     }
 }

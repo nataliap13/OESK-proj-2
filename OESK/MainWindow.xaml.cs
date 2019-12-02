@@ -163,9 +163,9 @@ namespace OESK
         {
             var entryTestResult = new TableTestResult();
             entryTestResult.IDText = IDText;
-            entryTestResult.MD5CalculationTime = ((int)MD5Time.TotalSeconds).ToString() + "," + String.Format("{0:fffffff}", MD5Time);
-            entryTestResult.SHA1CalculationTime = ((int)SHA1Time.TotalSeconds).ToString() + "," + String.Format("{0:fffffff}", SHA1Time);
-            entryTestResult.SHA256CalculationTime = ((int)SHA256Time.TotalSeconds).ToString() + "," + String.Format("{0:fffffff}", SHA256Time);
+            entryTestResult.MD5CalculationTime = TimeSpanConverter.ToSecondsMiliseconds(MD5Time);
+            entryTestResult.SHA1CalculationTime = TimeSpanConverter.ToSecondsMiliseconds(SHA1Time);
+            entryTestResult.SHA256CalculationTime = TimeSpanConverter.ToSecondsMiliseconds(SHA256Time);
             entryTestResult = conn.TableTestResult.Add(entryTestResult);
             try
             { conn.SaveChanges(); }
