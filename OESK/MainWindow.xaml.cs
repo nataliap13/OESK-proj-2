@@ -228,9 +228,7 @@ namespace OESK
                     listOfCalcResults.Add(new TableCalcParams("SHA256", textLength, SHA256Times));
                 }
                 ListViewMain.ItemsSource = listOfCalcResults;
-
                 TxtBlockFullTime.Text = (DateTime.Now - begin).ToString();
-                MessageBox.Show("Test zakończony poprawnie.");
             }
             catch (Exception ex)
             { MessageBox.Show("Error: " + ex.Message); MessageBox.Show(ex.InnerException.Message); }
