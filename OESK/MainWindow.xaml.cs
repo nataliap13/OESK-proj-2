@@ -15,7 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 //using System.Windows.Shapes;
-//using System.Management;
+using System.Management;
 
 namespace OESK
 {
@@ -31,17 +31,76 @@ namespace OESK
         public MainWindow()
         {
             InitializeComponent();
-            /*
+
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var listOfCalcResults = new List<TableCalcParams>();
+            var templist = new List<TimeSpan>();
+            templist.Add(new TimeSpan(1));
             try
             {
-                var items = new List<int>();
-                for (int i = 1; i < 12; i++)
-                { items.Add(i); }
-                ListBox1.ItemsSource = items;
+                //https://documentation.solarwindsmsp.com/N-central/documentation/Content/Automation/Objects/System/GetEnvironmentVariable.htm
+                //MessageBox.Show(Environment.GetEnvironmentVariable(pole.Text));
+
+                //https://docs.microsoft.com/pl-pl/windows/win32/cimwin32prov/win32-processor?redirectedfrom=MSDN
+                //ManagementObjectSearcher mos = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_Processor");
+                //ManagementObjectSearcher mos = new ManagementObjectSearcher("SELECT * FROM Win32_Processor");
+
+                /*
+                ManagementObjectSearcher mos = new ManagementObjectSearcher("SELECT * FROM " + pole.Text);
+                foreach (ManagementObject mo in mos.Get())
+                {
+                    //MessageBox.Show(mo["Name"].ToString());
+                    listOfCalcResults.Add(new TableCalcParams(mo["Name"].ToString(), 0, templist));
+                }*/
+
+                /*
+                foreach (var item in new ManagementObjectSearcher("Select * from Win32_ComputerSystem").Get())
+                {
+                    listOfCalcResults.Add(new TableCalcParams("Number Of Physical Processors: " + item["NumberOfProcessors"].ToString(), -1, templist));
+                }*/
+
+                //Win32_Processor Name
+                //Win32_PhysicalMemory Manufacturer, Part Number, Speed, Capacity suma/1024/1024/1024
+                //Win32_MemoryArray Ending address /1024/1024
+                //https://www.codeguru.com/columns/dotnet/using-c-to-find-out-what-your-computer-is-made-of.html
+                //https://docs.microsoft.com/pl-pl/windows/win32/cimwin32prov/computer-system-hardware-classes?redirectedfrom=MSDN
+                ManagementClass myManagementClass = new ManagementClass(pole.Text);
+                ManagementObjectCollection myManagementCollection = myManagementClass.GetInstances();
+                PropertyDataCollection myProperties = myManagementClass.Properties;
+                int i = 0;
+                foreach (ManagementObject obj in myManagementCollection)
+                {
+                    foreach (PropertyData property in myProperties)
+                    {
+                        try
+                        {
+                            listOfCalcResults.Add(new TableCalcParams(property.Name, i, templist));                        }
+                        catch (Exception)
+                        { }
+                        try
+                        {
+                            listOfCalcResults.Add(new TableCalcParams(obj.Properties[property.Name].Value.ToString(), i, templist));
+                        }
+                        catch (Exception)
+                        { }
+                        i++;
+                        /*
+                    listOfCalcResults.Add(new TableCalcParams(property.Origin, i++, templist));
+                    listOfCalcResults.Add(new TableCalcParams(property.Qualifiers.ToString(), i++, templist));
+                    listOfCalcResults.Add(new TableCalcParams(property.ToString(), i++, templist));
+                    listOfCalcResults.Add(new TableCalcParams(property.Type.ToString(), i++, templist));
+                    listOfCalcResults.Add(new TableCalcParams(property.Value.ToString(), i++, templist));
+                    */
+                    }
+                }
+
             }
-            catch(Exception e)
-            { MessageBox.Show("init ex: " + e.Message); }
-            */
+            catch (Exception ex)
+            { MessageBox.Show(ex.Message); }
+            ListViewMain.ItemsSource = listOfCalcResults;
         }
 
         private string buildHashString(byte[] data)
@@ -173,7 +232,7 @@ namespace OESK
             { MessageBox.Show("Nie mozna zapisac do db: " + e.Message); }
         }
 
-        private int SearchForTextInDatabaseAddIfNotExists(string text)
+        private int SearchForTextIDInDatabaseAddIfNotExists(string text)
         {
             //search for this text in database
             var listOfTexts = conn.TableText.Where(x => x.Text == text).ToList();
@@ -193,7 +252,7 @@ namespace OESK
             return IDText;
         }
 
-        private void BtnStartStandardTest_Click(object sender, RoutedEventArgs e)
+        private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
             var begin = DateTime.Now;
             var MD5Times = new List<TimeSpan>();
@@ -208,7 +267,7 @@ namespace OESK
                     //text = string.Empty;
                     var textLength = Convert.ToInt32(Math.Pow(10, i));
                     var text = new String('A', textLength);
-                    var IDText = SearchForTextInDatabaseAddIfNotExists(text);
+                    var IDText = SearchForTextIDInDatabaseAddIfNotExists(text);
 
                     TimeSpan MD5Time;
                     TimeSpan SHA1Time;

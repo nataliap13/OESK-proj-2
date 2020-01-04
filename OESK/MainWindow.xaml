@@ -9,8 +9,8 @@
     <Grid>
         <TextBlock Name="TxtBlockFullTime" Text="Czas testu" HorizontalAlignment="Left" Margin="123,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="100"/>
 
-        <Button Name="BtnStartStandardTest" Content="Start" Margin="0,10,524,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="108" Click="BtnStartStandardTest_Click" />
-        <ListView Name="ListViewMain" HorizontalAlignment="Left" Width="622" Height="224" Margin="10,35,0,0" VerticalAlignment="Top">
+        <Button Name="BtnStart" Content="Start" Margin="10,10,0,0" VerticalAlignment="Top" Click="BtnStart_Click" HorizontalAlignment="Left" Width="108" />
+        <ListView Name="ListViewMain" Margin="10,35,10,10">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Funkcja" DisplayMemberBinding="{Binding Name}" />
@@ -22,6 +22,8 @@
                 </GridView>
             </ListView.View>
         </ListView>
+        <TextBox Name="pole" HorizontalAlignment="Left" Height="23" Margin="390,10,0,0" TextWrapping="Wrap" Text="Win32_Processor" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="515,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
 
     </Grid>
 </Window>
