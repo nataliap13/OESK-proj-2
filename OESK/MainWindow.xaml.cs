@@ -31,7 +31,68 @@ namespace OESK
         public MainWindow()
         {
             InitializeComponent();
+        }
 
+        private void ReadPCConfiguration(out string CPUName,
+            out int RAMCapacity, out int RAMFrequency)
+        {
+            CPUName = string.Empty;
+            RAMCapacity = 0;
+            RAMFrequency = 0;
+            try
+            {
+                //Win32_Processor Name
+                //Win32_PhysicalMemory Manufacturer, PartNumber, Speed, Capacity suma/1024/1024/1024
+                //Win32_MemoryArray EndingAddress +1 /1024/1024
+                //https://www.codeguru.com/columns/dotnet/using-c-to-find-out-what-your-computer-is-made-of.html
+                //https://docs.microsoft.com/pl-pl/windows/win32/cimwin32prov/computer-system-hardware-classes?redirectedfrom=MSDN
+                {
+                    ManagementClass myManagementClass = new ManagementClass("Win32_Processor");
+                    ManagementObjectCollection myManagementCollection = myManagementClass.GetInstances();
+                    if (myManagementCollection.Count > 1)
+                    { MessageBox.Show("UWAGA, wiele obiektów dla Win32_Processor"); }
+                    foreach (ManagementObject obj in myManagementCollection)
+                    {
+                        try
+                        { CPUName = obj.Properties["Name"].Value.ToString(); }
+                        catch (Exception)
+                        { }
+                    }
+                }
+                {
+                    ManagementClass myManagementClass = new ManagementClass("Win32_PhysicalMemory");
+                    ManagementObjectCollection myManagementCollection = myManagementClass.GetInstances();
+                    if (myManagementCollection.Count > 1)
+                    { MessageBox.Show("UWAGA, wiele obiektów dla Win32_PhysicalMemory"); }
+                    foreach (ManagementObject obj in myManagementCollection)
+                    {
+                        try
+                        {
+                            RAMFrequency = (int)obj.Properties["Speed"].Value;
+                        }
+                        catch (Exception ex)
+                        { MessageBox.Show("2: " + ex.Message); }
+                    }
+                }
+                {
+                    ManagementClass myManagementClass = new ManagementClass("Win32_MemoryArray");
+                    ManagementObjectCollection myManagementCollection = myManagementClass.GetInstances();
+                    if (myManagementCollection.Count > 1)
+                    { MessageBox.Show("UWAGA, wiele obiektów dla Win32_MemoryArray"); }
+                    foreach (ManagementObject obj in myManagementCollection)
+                    {
+                        try
+                        {
+                            RAMCapacity = (((int)(obj.Properties["EndingAddress"].Value) + 1) / 1024 / 1024);
+                        }
+                        catch (Exception ex)
+                        { MessageBox.Show("3: " + ex.Message); }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {// MessageBox.Show(ex.Message);
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -77,7 +138,8 @@ namespace OESK
                     {
                         try
                         {
-                            listOfCalcResults.Add(new TableCalcParams(property.Name, i, templist));                        }
+                            listOfCalcResults.Add(new TableCalcParams(property.Name, i, templist));
+                        }
                         catch (Exception)
                         { }
                         try
@@ -291,6 +353,15 @@ namespace OESK
             }
             catch (Exception ex)
             { MessageBox.Show("Error: " + ex.Message); MessageBox.Show(ex.InnerException.Message); }
+        }
+
+        private void BtnMyPC_Click(object sender, RoutedEventArgs e)
+        {
+            string CPUName;
+            int RAMCapacity;
+            int RAMFrequency;
+            ReadPCConfiguration(out CPUName, out RAMCapacity, out RAMFrequency);
+            MessageBox.Show(CPUName + "\n" + RAMCapacity + "\n" + RAMFrequency);
         }
     }
 }

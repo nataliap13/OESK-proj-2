@@ -26,7 +26,10 @@ namespace OESK
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
             base.OnModelCreating(modelBuilder);
         }
-        
+
+        public DbSet<TableTestResult> TableCPU { get; set; }
+        public DbSet<TableTestResult> TablePC { get; set; }
+        public DbSet<TableTestResult> TableRAM { get; set; }
         public DbSet<TableTestResult> TableTestResult { get; set; }
         public DbSet<TableText> TableText { get; set; }
     }

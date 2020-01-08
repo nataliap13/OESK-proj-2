@@ -10,7 +10,7 @@ namespace OESK
     public class TableTestResult
     {
         [Key]
-        public int ID { get; set; }
+        public int IDTest { get; set; }
 
         public int IDText { get; set; }//FK
         public virtual TableText TableText { get; set; }
@@ -19,7 +19,7 @@ namespace OESK
         public string SHA1CalculationTime { get; set; }
         public string SHA256CalculationTime { get; set; }
 
-        public string RamFrequency { get; set; }
-        public string RamCLDelay { get; set; }
+        public string IDPC { get; set; }//FK
+        public virtual TablePC TablePC { get; set; }
     }
 }
