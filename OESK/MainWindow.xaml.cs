@@ -42,15 +42,15 @@ namespace OESK
             try
             {
                 //Win32_Processor Name
-                //Win32_PhysicalMemory Manufacturer, PartNumber, Speed, Capacity suma/1024/1024/1024
+                //Win32_PhysicalMemory Speed, Capacity suma/1024/1024/1024
                 //Win32_MemoryArray EndingAddress +1 /1024/1024
                 //https://www.codeguru.com/columns/dotnet/using-c-to-find-out-what-your-computer-is-made-of.html
                 //https://docs.microsoft.com/pl-pl/windows/win32/cimwin32prov/computer-system-hardware-classes?redirectedfrom=MSDN
                 {
                     ManagementClass myManagementClass = new ManagementClass("Win32_Processor");
                     ManagementObjectCollection myManagementCollection = myManagementClass.GetInstances();
-                    if (myManagementCollection.Count > 1)
-                    { MessageBox.Show("UWAGA, wiele obiektów dla Win32_Processor"); }
+                    //if (myManagementCollection.Count > 1)
+                    //{ MessageBox.Show("UWAGA, wiele obiektów dla Win32_Processor"); }
                     foreach (ManagementObject obj in myManagementCollection)
                     {
                         try
@@ -62,67 +62,48 @@ namespace OESK
                 {
                     ManagementClass myManagementClass = new ManagementClass("Win32_PhysicalMemory");
                     ManagementObjectCollection myManagementCollection = myManagementClass.GetInstances();
-                    if (myManagementCollection.Count > 1)
-                    { MessageBox.Show("UWAGA, wiele obiektów dla Win32_PhysicalMemory"); }
+                    //if (myManagementCollection.Count > 1)
+                    //{ MessageBox.Show("UWAGA, wiele obiektów dla Win32_PhysicalMemory"); }
                     foreach (ManagementObject obj in myManagementCollection)
                     {
                         try
                         {
-                            RAMFrequency = (int)obj.Properties["Speed"].Value;
+                            RAMFrequency = Convert.ToInt32(obj.Properties["Speed"].Value);
+                            if (RAMFrequency > 0)
+                            { break; }
                         }
-                        catch (Exception ex)
-                        { MessageBox.Show("2: " + ex.Message); }
+                        catch (Exception)
+                        { }
                     }
                 }
                 {
                     ManagementClass myManagementClass = new ManagementClass("Win32_MemoryArray");
                     ManagementObjectCollection myManagementCollection = myManagementClass.GetInstances();
-                    if (myManagementCollection.Count > 1)
-                    { MessageBox.Show("UWAGA, wiele obiektów dla Win32_MemoryArray"); }
+                    //if (myManagementCollection.Count > 1)
+                    //{ MessageBox.Show("UWAGA, wiele obiektów dla Win32_MemoryArray"); }
                     foreach (ManagementObject obj in myManagementCollection)
                     {
                         try
                         {
-                            RAMCapacity = (((int)(obj.Properties["EndingAddress"].Value) + 1) / 1024 / 1024);
+                            RAMCapacity = Convert.ToInt32((Convert.ToInt64(obj.Properties["EndingAddress"].Value) + 1) / 1024 / 1024);
                         }
-                        catch (Exception ex)
-                        { MessageBox.Show("3: " + ex.Message); }
+                        catch (Exception)
+                        { }
                     }
                 }
             }
-            catch (Exception ex)
-            {// MessageBox.Show(ex.Message);
-            }
+            catch (Exception)
+            { }
         }
-
+        /*
         private void Button_Click(object sender, RoutedEventArgs e)
-        {
+        {//sprawdzenie wszystkich mozliwosci PC.
+        //W linkach sa kody ktore nalezy podac podczas tworzenia ManagementClass aby dostać info o PC
             var listOfCalcResults = new List<TableCalcParams>();
             var templist = new List<TimeSpan>();
             templist.Add(new TimeSpan(1));
             try
             {
-                //https://documentation.solarwindsmsp.com/N-central/documentation/Content/Automation/Objects/System/GetEnvironmentVariable.htm
-                //MessageBox.Show(Environment.GetEnvironmentVariable(pole.Text));
-
-                //https://docs.microsoft.com/pl-pl/windows/win32/cimwin32prov/win32-processor?redirectedfrom=MSDN
-                //ManagementObjectSearcher mos = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_Processor");
-                //ManagementObjectSearcher mos = new ManagementObjectSearcher("SELECT * FROM Win32_Processor");
-
-                /*
-                ManagementObjectSearcher mos = new ManagementObjectSearcher("SELECT * FROM " + pole.Text);
-                foreach (ManagementObject mo in mos.Get())
-                {
-                    //MessageBox.Show(mo["Name"].ToString());
-                    listOfCalcResults.Add(new TableCalcParams(mo["Name"].ToString(), 0, templist));
-                }*/
-
-                /*
-                foreach (var item in new ManagementObjectSearcher("Select * from Win32_ComputerSystem").Get())
-                {
-                    listOfCalcResults.Add(new TableCalcParams("Number Of Physical Processors: " + item["NumberOfProcessors"].ToString(), -1, templist));
-                }*/
-
                 //Win32_Processor Name
                 //Win32_PhysicalMemory Manufacturer, Part Number, Speed, Capacity suma/1024/1024/1024
                 //Win32_MemoryArray Ending address /1024/1024
@@ -149,13 +130,6 @@ namespace OESK
                         catch (Exception)
                         { }
                         i++;
-                        /*
-                    listOfCalcResults.Add(new TableCalcParams(property.Origin, i++, templist));
-                    listOfCalcResults.Add(new TableCalcParams(property.Qualifiers.ToString(), i++, templist));
-                    listOfCalcResults.Add(new TableCalcParams(property.ToString(), i++, templist));
-                    listOfCalcResults.Add(new TableCalcParams(property.Type.ToString(), i++, templist));
-                    listOfCalcResults.Add(new TableCalcParams(property.Value.ToString(), i++, templist));
-                    */
                     }
                 }
 
@@ -163,7 +137,7 @@ namespace OESK
             catch (Exception ex)
             { MessageBox.Show(ex.Message); }
             ListViewMain.ItemsSource = listOfCalcResults;
-        }
+        }*/
 
         private string buildHashString(byte[] data)
         {
@@ -330,7 +304,6 @@ namespace OESK
                     var textLength = Convert.ToInt32(Math.Pow(10, i));
                     var text = new String('A', textLength);
                     var IDText = SearchForTextIDInDatabaseAddIfNotExists(text);
-
                     TimeSpan MD5Time;
                     TimeSpan SHA1Time;
                     TimeSpan SHA256Time;

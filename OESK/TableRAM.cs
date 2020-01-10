@@ -11,7 +11,7 @@ namespace OESK
     {
         [Key]
         public int IDRAM { get; set; }
-        public string RAMCapacity { get; set; }
-        public string RAMFrequancy { get; set; }
+        public int RAMCapacity { get; set; }
+        public int RAMFrequancy { get; set; }
     }
 }

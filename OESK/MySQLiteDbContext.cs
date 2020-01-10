@@ -27,9 +27,9 @@ namespace OESK
             base.OnModelCreating(modelBuilder);
         }
 
-        public DbSet<TableTestResult> TableCPU { get; set; }
-        public DbSet<TableTestResult> TablePC { get; set; }
-        public DbSet<TableTestResult> TableRAM { get; set; }
+        public DbSet<TableCPU> TableCPU { get; set; }
+        public DbSet<TablePC> TablePC { get; set; }
+        public DbSet<TableRAM> TableRAM { get; set; }
         public DbSet<TableTestResult> TableTestResult { get; set; }
         public DbSet<TableText> TableText { get; set; }
     }
