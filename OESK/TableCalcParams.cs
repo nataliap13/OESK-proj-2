@@ -8,31 +8,26 @@ namespace OESK
 {
     class TableCalcParams
     {
-        public string Name { get; private set; }
-        public int Length { get; private set; }
-        public string Min { get; private set; }
-        public string Avg { get; private set; }
-        public string Max { get; private set; }
-        public string StdDev { get; private set; }
+        public string FunctionName { get; private set; }
+        public int TextLength { get; private set; }
+        public int NumberOfIterations { get; private set; }
+        public string TestTimeInSeconds { get; private set; }
+        public string AvgTimeInSeconds { get; private set; }
+        public TimeSpan TestTimeInSecondsAsTimeSpan { get; private set; }
+        public TimeSpan AvgTimeInSecondsAsTimespan { get; private set; }
 
-        public TableCalcParams(string functionName, int textLength, List<TimeSpan> listOfTimes)
+        public TableCalcParams(string functionName, int textLength, int NumberOfIterations,
+            TimeSpan testTime)
         {
-            Name = functionName;
-            Length = textLength;
-            Min = TimeSpanConverter.ToSecondsMiliseconds(listOfTimes.Min());
-            Avg = TimeSpanConverter.ToSecondsMiliseconds(DoubleTicksToTimespan(listOfTimes.Average(timeSpan => timeSpan.Ticks)));
-            Max = TimeSpanConverter.ToSecondsMiliseconds(listOfTimes.Max());
-            StdDev = StandardDeviation(listOfTimes);
+            FunctionName = functionName;
+            TextLength = textLength;
+            TestTimeInSecondsAsTimeSpan = testTime;
+            AvgTimeInSecondsAsTimespan = LongTicksToTimespan(testTime.Ticks / NumberOfIterations);
+            TestTimeInSeconds = TimeSpanConverter.ToSecondsMiliseconds(testTime);
+            AvgTimeInSeconds = TimeSpanConverter.ToSecondsMiliseconds(AvgTimeInSecondsAsTimespan);
         }
 
-        public static string StandardDeviation(IEnumerable<TimeSpan> values)
-        {
-            double avgTicks = values.Average(timeSpan => timeSpan.Ticks);
-            var stdDevInTicks = Math.Sqrt(values.Average(v => Math.Pow(v.Ticks - avgTicks, 2)));
-            return TimeSpanConverter.ToSecondsMiliseconds(
-                DoubleTicksToTimespan(stdDevInTicks));
-        }
-        private static TimeSpan DoubleTicksToTimespan(double value)
+        private static TimeSpan LongTicksToTimespan(long value)
         { return new TimeSpan(Convert.ToInt64(value)); }
     }
 }

@@ -94,9 +94,11 @@
     <Compile Include="MySQLiteDbContext.cs" />
     <Compile Include="SQLiteConfiguration.cs" />
     <Compile Include="TableCalcParams.cs" />
+    <Compile Include="TableFunction.cs" />
     <Compile Include="TableRAM.cs" />
     <Compile Include="TablePC.cs" />
     <Compile Include="TableCPU.cs" />
+    <Compile Include="TableTest.cs" />
     <Compile Include="TableTestResult.cs" />
     <Compile Include="TableText.cs" />
     <Compile Include="TimeSpanConverter.cs" />

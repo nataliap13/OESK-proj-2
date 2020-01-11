@@ -165,7 +165,7 @@ namespace OESK
             return sBuilder.ToString();
         }
 
-        private string GetMd5Hash(ref string input, out TimeSpan timeSpan)
+        private void GetMd5Hashes(ref string input, out TimeSpan timeSpan, int numberOfIterations)
         {
             #region set priority
             //use the first Core/Processor for the test
@@ -180,15 +180,17 @@ namespace OESK
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-
-            // Convert the input string to a byte array and compute the hash.
-            byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+            for (int i = 0; i < numberOfIterations; i++)
+            {
+                // Convert the input string to a byte array and compute the hash.
+                byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+            }
             stopWatch.Stop();
             // Get the elapsed time as a TimeSpan value.
             timeSpan = stopWatch.Elapsed;
-            return buildHashString(data);
+            return;
         }
-        private string GetSHA1Hash(ref string input, out TimeSpan timeSpan)
+        private void GetSHA1Hashes(ref string input, out TimeSpan timeSpan, int numberOfIterations)
         {
             #region set priority
             //use the first Core/Processor for the test
@@ -203,15 +205,17 @@ namespace OESK
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-
-            // Convert the input string to a byte array and compute the hash.
-            byte[] data = sha1Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+            for (int i = 0; i < numberOfIterations; i++)
+            {
+                // Convert the input string to a byte array and compute the hash.
+                byte[] data = sha1Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+            }
             stopWatch.Stop();
             // Get the elapsed time as a TimeSpan value.
             timeSpan = stopWatch.Elapsed;
-            return buildHashString(data);
+            return;
         }
-        private string GetSHA256Hash(ref string input, out TimeSpan timeSpan)
+        private void GetSHA256Hashes(ref string input, out TimeSpan timeSpan, int numberOfIterations)
         {
             #region set priority
             //use the first Core/Processor for the test
@@ -226,13 +230,15 @@ namespace OESK
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-
-            // Convert the input string to a byte array and compute the hash.
-            byte[] data = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+            for (int i = 0; i < numberOfIterations; i++)
+            {
+                // Convert the input string to a byte array and compute the hash.
+                byte[] data = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+            }
             stopWatch.Stop();
             // Get the elapsed time as a TimeSpan value.
             timeSpan = stopWatch.Elapsed;
-            return buildHashString(data);
+            return;
         }
         /*
         private void someOldStartFuntion_Click(object sender, RoutedEventArgs e)
@@ -265,16 +271,23 @@ namespace OESK
             TxtBlockFullTime.Text = (DateTime.Now - begin).ToString();
         }*/
 
-        private void SaveTestToDatabase(int IDPC, int IDText, TimeSpan MD5Time, TimeSpan SHA1Time, TimeSpan SHA256Time)
+        private void SaveTestToDatabase(int IDPC, int IDFunction, int IDText,
+            TableCalcParams tableCalcParams)
         {
             try
             {
+                var entityTest = new TableTest();
+                entityTest.IDPC = IDPC;
+                entityTest.IDFunction = IDFunction;
+                entityTest = conn.TableTest.Add(entityTest);
+                conn.SaveChanges();
+
                 var entityTestResult = new TableTestResult();
-                entityTestResult.IDPC = IDPC;
+                entityTestResult.IDTest = entityTest.IDTest;
                 entityTestResult.IDText = IDText;
-                entityTestResult.MD5CalculationTime = TimeSpanConverter.ToSecondsMiliseconds(MD5Time);
-                entityTestResult.SHA1CalculationTime = TimeSpanConverter.ToSecondsMiliseconds(SHA1Time);
-                entityTestResult.SHA256CalculationTime = TimeSpanConverter.ToSecondsMiliseconds(SHA256Time);
+                entityTestResult.NumberOfIterations = tableCalcParams.NumberOfIterations;
+                entityTestResult.FullTime = tableCalcParams.TestTimeInSeconds;
+                entityTestResult.AvgTime = tableCalcParams.AvgTimeInSeconds;
                 conn.TableTestResult.Add(entityTestResult);
                 conn.SaveChanges();
             }
@@ -282,6 +295,25 @@ namespace OESK
             { MessageBox.Show("Error: " + e.Message); }
         }
 
+        private int SearchForIDFunctionInDatabaseAddIfNotExist(string functionName)
+        {
+            //search for this text in database
+            var listOfEntities = conn.TableFunction.Where(x => x.FunctionName == functionName).ToList();
+            var ID = 0;
+            if (listOfEntities.Count() == 0)
+            {
+                var entity = new TableFunction();
+                entity.FunctionName = functionName;
+                entity = conn.TableFunction.Add(entity);
+                try
+                { conn.SaveChanges(); }
+                catch (Exception ex)
+                { MessageBox.Show("Nie mozna zapisac do db: " + ex.Message); }
+                ID = entity.IDFunction;
+            }
+            else { ID = listOfEntities.First().IDFunction; }
+            return ID;
+        }
         private int SearchForIDTextInDatabaseAddIfNotExist(string text)
         {
             //search for this text in database
@@ -364,9 +396,12 @@ namespace OESK
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
             var begin = DateTime.Now;
-            var MD5Times = new List<TimeSpan>();
-            var SHA1Times = new List<TimeSpan>();
-            var SHA256Times = new List<TimeSpan>();
+            //var MD5Times = new List<TimeSpan>();
+            //var SHA1Times = new List<TimeSpan>();
+            //var SHA256Times = new List<TimeSpan>();
+            int IDMD5 = SearchForIDFunctionInDatabaseAddIfNotExist("MD5");
+            int IDSHA1 = SearchForIDFunctionInDatabaseAddIfNotExist("SHA1");
+            int IDSHA256 = SearchForIDFunctionInDatabaseAddIfNotExist("SHA256");
             try
             {
                 var listOfCalcResults = new List<TableCalcParams>();
@@ -380,19 +415,24 @@ namespace OESK
                     TimeSpan MD5Time;
                     TimeSpan SHA1Time;
                     TimeSpan SHA256Time;
-                    for (int j = 0; j < 100; j++)
-                    {
-                        GetMd5Hash(ref text, out MD5Time);
-                        GetSHA1Hash(ref text, out SHA1Time);
-                        GetSHA256Hash(ref text, out SHA256Time);
-                        MD5Times.Add(MD5Time);
-                        SHA1Times.Add(SHA1Time);
-                        SHA256Times.Add(SHA256Time);
-                        SaveTestToDatabase(IDPC, IDText, MD5Time, SHA1Time, SHA256Time);
-                    }
-                    listOfCalcResults.Add(new TableCalcParams("MD5", textLength, MD5Times));
-                    listOfCalcResults.Add(new TableCalcParams("SHA1", textLength, SHA1Times));
-                    listOfCalcResults.Add(new TableCalcParams("SHA256", textLength, SHA256Times));
+                    int numberOfIterations = 100000;
+                    GetMd5Hashes(ref text, out MD5Time, numberOfIterations);
+                    GetSHA1Hashes(ref text, out SHA1Time, numberOfIterations);
+                    GetSHA256Hashes(ref text, out SHA256Time, numberOfIterations);
+
+                    /////Add to UI Table/List
+                    var MD5TableCalcParams = new TableCalcParams("MD5", textLength, numberOfIterations, MD5Time);
+                    listOfCalcResults.Add(MD5TableCalcParams);
+
+                    var SHA1TableCalcParams = new TableCalcParams("SHA1", textLength, numberOfIterations, SHA1Time);
+                    listOfCalcResults.Add(SHA1TableCalcParams);
+
+                    var SHA256TableCalcParams = new TableCalcParams("SHA256", textLength, numberOfIterations, SHA256Time);
+                    listOfCalcResults.Add(SHA256TableCalcParams);
+
+                    SaveTestToDatabase(IDPC, IDMD5, IDText, MD5TableCalcParams);
+                    SaveTestToDatabase(IDPC, IDSHA1, IDText, SHA1TableCalcParams);
+                    SaveTestToDatabase(IDPC, IDSHA256, IDText, SHA256TableCalcParams);
                 }
                 ListViewMain.ItemsSource = listOfCalcResults;
                 TxtBlockFullTime.Text = (DateTime.Now - begin).ToString();
@@ -407,7 +447,8 @@ namespace OESK
             int RAMCapacity;
             int RAMFrequency;
             ReadPCConfiguration(out CPUName, out RAMCapacity, out RAMFrequency);
-            MessageBox.Show(CPUName + "\n" + RAMCapacity + "\n" + RAMFrequency);
+            MessageBox.Show("CPU: "+CPUName + "\nRAM Capacity: "
+                + RAMCapacity + "\nRAM Frequency: " + RAMFrequency);
         }
     }
 }

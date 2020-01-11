@@ -28,8 +28,10 @@ namespace OESK
         }
 
         public DbSet<TableCPU> TableCPU { get; set; }
+        public DbSet<TableFunction> TableFunction { get; set; }
         public DbSet<TablePC> TablePC { get; set; }
         public DbSet<TableRAM> TableRAM { get; set; }
+        public DbSet<TableTest> TableTest { get; set; }
         public DbSet<TableTestResult> TableTestResult { get; set; }
         public DbSet<TableText> TableText { get; set; }
     }
