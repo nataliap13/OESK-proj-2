@@ -28,13 +28,24 @@ namespace OESK
         private SHA1 sha1Hash = SHA1.Create();
         private SHA256 sha256Hash = SHA256.Create();
         private MySQLiteDbContext conn = new MySQLiteDbContext();
+        private string CPUName;
+        private int RAMCapacity = 0;
+        private int RAMFrequency = 0;
+        private int IDCPU = 0;
+        private int IDRAM = 0;
+        private int IDPC = 0;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            ReadPCConfiguration(out CPUName, out RAMCapacity, out RAMFrequency);
+            IDCPU = SearchForIDCPUInDatabaseAddIfNotExist(CPUName);
+            IDRAM = SearchForIDRAMInDatabaseAddIfNotExist(RAMCapacity, RAMFrequency);
+            IDPC = SearchForIDPCInDatabaseAddIfNotExist(IDCPU, IDRAM);
         }
 
-        private void ReadPCConfiguration(out string CPUName,
-            out int RAMCapacity, out int RAMFrequency)
+        private void ReadPCConfiguration(out string CPUName, out int RAMCapacity, out int RAMFrequency)
         {
             CPUName = string.Empty;
             RAMCapacity = 0;
@@ -254,38 +265,100 @@ namespace OESK
             TxtBlockFullTime.Text = (DateTime.Now - begin).ToString();
         }*/
 
-        private void SaveTestToDatabase(ref int IDText, ref TimeSpan MD5Time, ref TimeSpan SHA1Time, ref TimeSpan SHA256Time)
+        private void SaveTestToDatabase(int IDPC, int IDText, TimeSpan MD5Time, TimeSpan SHA1Time, TimeSpan SHA256Time)
         {
-            var entryTestResult = new TableTestResult();
-            entryTestResult.IDText = IDText;
-            entryTestResult.MD5CalculationTime = TimeSpanConverter.ToSecondsMiliseconds(MD5Time);
-            entryTestResult.SHA1CalculationTime = TimeSpanConverter.ToSecondsMiliseconds(SHA1Time);
-            entryTestResult.SHA256CalculationTime = TimeSpanConverter.ToSecondsMiliseconds(SHA256Time);
-            entryTestResult = conn.TableTestResult.Add(entryTestResult);
             try
-            { conn.SaveChanges(); }
+            {
+                var entityTestResult = new TableTestResult();
+                entityTestResult.IDPC = IDPC;
+                entityTestResult.IDText = IDText;
+                entityTestResult.MD5CalculationTime = TimeSpanConverter.ToSecondsMiliseconds(MD5Time);
+                entityTestResult.SHA1CalculationTime = TimeSpanConverter.ToSecondsMiliseconds(SHA1Time);
+                entityTestResult.SHA256CalculationTime = TimeSpanConverter.ToSecondsMiliseconds(SHA256Time);
+                conn.TableTestResult.Add(entityTestResult);
+                conn.SaveChanges();
+            }
             catch (Exception e)
-            { MessageBox.Show("Nie mozna zapisac do db: " + e.Message); }
+            { MessageBox.Show("Error: " + e.Message); }
         }
 
-        private int SearchForTextIDInDatabaseAddIfNotExists(string text)
+        private int SearchForIDTextInDatabaseAddIfNotExist(string text)
         {
             //search for this text in database
-            var listOfTexts = conn.TableText.Where(x => x.Text == text).ToList();
-            var IDText = 0;
-            if (listOfTexts.Count() == 0)
+            var listOfEntities = conn.TableText.Where(x => x.Text == text).ToList();
+            var ID = 0;
+            if (listOfEntities.Count() == 0)
             {
-                var entryText = new TableText();
-                entryText.Text = text;
-                entryText = conn.TableText.Add(entryText);
+                var entity = new TableText();
+                entity.Text = text;
+                entity = conn.TableText.Add(entity);
                 try
                 { conn.SaveChanges(); }
                 catch (Exception ex)
                 { MessageBox.Show("Nie mozna zapisac do db: " + ex.Message); }
-                IDText = entryText.IDText;
+                ID = entity.IDText;
             }
-            else { IDText = listOfTexts.First().IDText; }
-            return IDText;
+            else { ID = listOfEntities.First().IDText; }
+            return ID;
+        }
+        private int SearchForIDCPUInDatabaseAddIfNotExist(string CPUName)
+        {
+            //search for this text in database
+            var listOfEntities = conn.TableCPU.Where(x => x.CPUName == CPUName).ToList();
+            var ID = 0;
+            if (listOfEntities.Count() == 0)
+            {
+                var entity = new TableCPU();
+                entity.CPUName = CPUName;
+                entity = conn.TableCPU.Add(entity);
+                try
+                { conn.SaveChanges(); }
+                catch (Exception ex)
+                { MessageBox.Show("Nie mozna zapisac do db: " + ex.Message); }
+                ID = entity.IDCPU;
+            }
+            else { ID = listOfEntities.First().IDCPU; }
+            return ID;
+        }
+        private int SearchForIDRAMInDatabaseAddIfNotExist(int RAMCapacity, int RAMFrequency)
+        {
+            //search for this text in database
+            var listOfEntities = conn.TableRAM.Where(x => x.RAMCapacity == RAMCapacity).Where(x => x.RAMFrequency == RAMFrequency).ToList();
+            var ID = 0;
+            if (listOfEntities.Count() == 0)
+            {
+                var entity = new TableRAM();
+                entity.RAMCapacity = RAMCapacity;
+                entity.RAMFrequency = RAMFrequency;
+                entity = conn.TableRAM.Add(entity);
+                try
+                { conn.SaveChanges(); }
+                catch (Exception ex)
+                { MessageBox.Show("Nie mozna zapisac do db: " + ex.Message); }
+                ID = entity.IDRAM;
+            }
+            else { ID = listOfEntities.First().IDRAM; }
+            return ID;
+        }
+        private int SearchForIDPCInDatabaseAddIfNotExist(int IDCPU, int IDRAM)
+        {
+            //search for this text in database
+            var listOfEntities = conn.TablePC.Where(x => x.IDCPU == IDCPU).Where(x => x.IDRAM == IDRAM).ToList();
+            var ID = 0;
+            if (listOfEntities.Count() == 0)
+            {
+                var entity = new TablePC();
+                entity.IDCPU = IDCPU;
+                entity.IDRAM = IDRAM;
+                entity = conn.TablePC.Add(entity);
+                try
+                { conn.SaveChanges(); }
+                catch (Exception ex)
+                { MessageBox.Show("Nie mozna zapisac do db: " + ex.Message); }
+                ID = entity.IDRAM;
+            }
+            else { ID = listOfEntities.First().IDPC; }
+            return ID;
         }
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
@@ -303,7 +376,7 @@ namespace OESK
                     //text = string.Empty;
                     var textLength = Convert.ToInt32(Math.Pow(10, i));
                     var text = new String('A', textLength);
-                    var IDText = SearchForTextIDInDatabaseAddIfNotExists(text);
+                    var IDText = SearchForIDTextInDatabaseAddIfNotExist(text);
                     TimeSpan MD5Time;
                     TimeSpan SHA1Time;
                     TimeSpan SHA256Time;
@@ -315,7 +388,7 @@ namespace OESK
                         MD5Times.Add(MD5Time);
                         SHA1Times.Add(SHA1Time);
                         SHA256Times.Add(SHA256Time);
-                        //SaveTestToDatabase(ref IDText, ref MD5Time, ref SHA1Time, ref SHA256Time);
+                        SaveTestToDatabase(IDPC, IDText, MD5Time, SHA1Time, SHA256Time);
                     }
                     listOfCalcResults.Add(new TableCalcParams("MD5", textLength, MD5Times));
                     listOfCalcResults.Add(new TableCalcParams("SHA1", textLength, SHA1Times));
