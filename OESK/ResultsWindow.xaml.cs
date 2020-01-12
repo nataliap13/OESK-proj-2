@@ -47,7 +47,7 @@ namespace OESK
                 TestsAndTestResults_ => TestsAndTestResults_.TableTest.IDPC,
                 TablePC => TablePC.IDPC,
                 (testsAndTestResults, tablePC) =>
-                new { TestsAndTestResults = testsAndTestResults, TablePC = tablePC })
+                new {TestsAndTestResults = testsAndTestResults, TablePC = tablePC })
                 .OrderBy(x => x.TestsAndTestResults.TableTestResult.FullTime)
                 .ToList();
 
