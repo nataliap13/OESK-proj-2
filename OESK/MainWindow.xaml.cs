@@ -431,6 +431,7 @@ namespace OESK
             var function = CmbBxFunction.SelectionBoxItem.ToString();
             var IDFunction = SearchForIDFunctionInDatabaseAddIfNotExist(function);
             int IDText = 0;
+            TimeSpan CalcTime = new TimeSpan();
             try
             {
                 var listOfCalcResults = new List<TableCalcParams>();
@@ -438,12 +439,11 @@ namespace OESK
                 {
                     //text += new StringBuilder(text.Length * 9).Insert(0, text, 9).ToString();
                     //text = string.Empty;
-                    
+
                     //var textLength = Convert.ToInt32(Math.Pow(10, i));
                     var textLength = Convert.ToInt32(Convert.ToInt32(CmbBxTxtLen.SelectionBoxItem.ToString()));
                     var text = new String('A', textLength);
                     IDText = SearchForIDTextInDatabaseAddIfNotExist(text);
-                    TimeSpan CalcTime = new TimeSpan();
                     int numberOfIterations = 100000;
                     switch (function)
                     {
@@ -458,18 +458,50 @@ namespace OESK
                     }
 
                     //Add to UI Table/List
-                    var TableCalcParams = new TableCalcParams(function, textLength, numberOfIterations, CalcTime);
-                    listOfCalcResults.Add(TableCalcParams);
-                    SaveTestToDatabase(IDPC, IDFunction, IDText, TableCalcParams);
+                    var tableCalcParams = new TableCalcParams(function, textLength, numberOfIterations, CalcTime);
+                    listOfCalcResults.Add(tableCalcParams);
+                    SaveTestToDatabase(IDPC, IDFunction, IDText, tableCalcParams);
+                    TxtBlockFullTime.Text = tableCalcParams.TestTimeInSeconds;
+                    TxtBlockAvgTime.Text = tableCalcParams.AvgTimeInSeconds;
                 }
-                ListViewMain.ItemsSource = listOfCalcResults;
-                TxtBlockFullTime.Text = (DateTime.Now - begin).ToString();
-
-                var win2 = new ResultsWindow(IDFunction, IDText);
-                win2.Show();
+                //ListViewMain.ItemsSource = listOfCalcResults;
+                //var win2 = new ResultsWindow(IDFunction, IDText);
+                //win2.Show();
+                DownloadAllDBResults(IDFunction, IDText);
             }
             catch (Exception ex)
             { MessageBox.Show("Error: " + ex.Message); MessageBox.Show(ex.InnerException.Message); }
+        }
+
+        private void DownloadAllDBResults(int IDFunction, int IDText)
+        {
+            var TestsAndTestResults = conn.TableTest.Join(conn.TableTestResult,
+                TableTest => TableTest.IDTest,
+                TableTestResult => TableTestResult.IDTest,
+                (tableTest, tableTestResult) =>
+                new { TableTest = tableTest, TableTestResult = tableTestResult })
+                .Where(joined => joined.TableTest.IDFunction == IDFunction)
+                .Where(joined => joined.TableTestResult.IDText == IDText);
+
+            var TestsAndTestResultsAndPCs = TestsAndTestResults.Join(conn.TablePC,
+                TestsAndTestResults_ => TestsAndTestResults_.TableTest.IDPC,
+                TablePC => TablePC.IDPC,
+                (testsAndTestResults, tablePC) =>
+                new { TestsAndTestResults = testsAndTestResults, TablePC = tablePC })
+                .OrderBy(x => x.TestsAndTestResults.TableTestResult.FullTime)
+                .ToList();
+            ///Adding numeration to listView
+            List<object> lista = new List<object>();
+            foreach (var item in TestsAndTestResultsAndPCs)
+            {
+                var index = TestsAndTestResultsAndPCs.FindIndex
+                    (x => x.TestsAndTestResults.TableTestResult.IDTestResult == item.TestsAndTestResults.TableTestResult.IDTestResult);
+                var newObj = new { Index = index + 1, TestsAndTestResults = item.TestsAndTestResults, TablePC = item.TablePC, };
+                lista.Add(newObj);
+            }
+            //ListViewMain.ItemsSource = TestsAndTestResultsAndPCs;
+            ListViewMain.ItemsSource = lista;
+            return;
         }
 
         private void BtnMyPC_Click(object sender, RoutedEventArgs e)

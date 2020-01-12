@@ -5,25 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OESK"
         mc:Ignorable="d"
-        Title="Test szybkości działania wybranych funkcji skrótu" MinWidth="670" MinHeight="300" Width="650" Height="300">
+        Title="Benchmark komputera na bazie funkcji skrótu" MinWidth="800" MinHeight="300" Width="800" Height="300">
     <Grid>
-        <TextBlock Name="TxtBlockFullTime" Text="Czas testu" HorizontalAlignment="Left" Margin="273,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="100"/>
+        <Button Name="BtnStart" Content="Start" Margin="10,10,0,0" VerticalAlignment="Top" Click="BtnStart_Click" HorizontalAlignment="Left" Width="108" Height="45" />
 
-        <Button Name="BtnStart" Content="Start" Margin="10,10,0,0" VerticalAlignment="Top" Click="BtnStart_Click" HorizontalAlignment="Left" Width="108" />
-        <ListView Name="ListViewMain" Margin="10,35,10,10">
+        <TextBlock Text="Funkcja skrótu" HorizontalAlignment="Left" TextAlignment="Center" Margin="123,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="80"/>
+        <ComboBox Name="CmbBxFunction" Loaded="CmbBxFunction_Loaded" SelectionChanged="CmbBxFunction_SelectionChanged" HorizontalAlignment="Left" Margin="123,35,0,0" VerticalAlignment="Top" Width="80" Height="20"/>
+        
+        <TextBlock Text="Długość tekstu" HorizontalAlignment="Left" TextAlignment="Center" Margin="208,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="85"/>
+        <ComboBox Name="CmbBxTxtLen" Loaded="CmbBxTxtLen_Loaded" SelectionChanged="CmbBxTxtLen_SelectionChanged" HorizontalAlignment="Left" Margin="208,35,0,0" VerticalAlignment="Top" Width="85" Height="20"/>
+
+        <TextBlock Text="Czas testu" HorizontalAlignment="Left" TextAlignment="Center" Margin="298,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="70"/>
+        <TextBlock Name="TxtBlockFullTime" Text="" HorizontalAlignment="Left" Margin="298,35,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="70"/>
+
+        <TextBlock Text="Średni czas 1 cyklu" TextAlignment="Center" HorizontalAlignment="Left" Margin="373,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="100"/>
+        <TextBlock Name="TxtBlockAvgTime" Text="" HorizontalAlignment="Left" Margin="373,35,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="100"/>
+        
+        <Button Name="BtnMyPC" Content="MyPC" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="BtnMyPC_Click"/>
+
+
+        <ListView Name="ListViewMain" Margin="10,60,10,10">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Function Name" DisplayMemberBinding="{Binding FunctionName}" />
-                    <GridViewColumn Header="Text Length" DisplayMemberBinding="{Binding TextLength}" />
-                    <GridViewColumn Header="Full Test Time [s]" DisplayMemberBinding="{Binding TestTimeInSeconds}" />
-                    <GridViewColumn Header="Avg Single Hash Time [s]" DisplayMemberBinding="{Binding AvgTimeInSeconds}" />
+                    <GridViewColumn Header="No." DisplayMemberBinding="{Binding Index}" />
+                    <GridViewColumn Header="Full Test Time [s]" DisplayMemberBinding="{Binding TestsAndTestResults.TableTestResult.FullTime}" />
+                    <GridViewColumn Header="Avg Single Hash Time [s]" DisplayMemberBinding="{Binding TestsAndTestResults.TableTestResult.AvgTime}" />
+                    <GridViewColumn Header="CPU" DisplayMemberBinding="{Binding TablePC.TableCPU.CPUName}" />
+                    <GridViewColumn Header="RAM Frequency [MHz]" DisplayMemberBinding="{Binding TablePC.TableRAM.RAMFrequency}" />
+                    <GridViewColumn Header="RAM Capacity [GB]" DisplayMemberBinding="{Binding TablePC.TableRAM.RAMCapacity}" />
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Name="BtnMyPC" Content="MyPC" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="BtnMyPC_Click"/>
-
-        <ComboBox Name="CmbBxFunction" Loaded="CmbBxFunction_Loaded" SelectionChanged="CmbBxFunction_SelectionChanged" HorizontalAlignment="Left" Margin="123,10,0,0" VerticalAlignment="Top" Width="75" Height="20"/>
-        <ComboBox Name="CmbBxTxtLen" Loaded="CmbBxTxtLen_Loaded" SelectionChanged="CmbBxTxtLen_SelectionChanged" HorizontalAlignment="Left" Margin="203,10,0,0" VerticalAlignment="Top" Width="65" Height="20"/>
-
     </Grid>
 </Window>
