@@ -12,7 +12,7 @@
             <ListView.View>
                 <GridView>
 
-                    <!--<GridViewColumn Header="No." DisplayMemberBinding="{Binding Number}" />-->
+                    <GridViewColumn Header="No." DisplayMemberBinding="{Binding Index}" />
                     <GridViewColumn Header="Full Test Time [s]" DisplayMemberBinding="{Binding TestsAndTestResults.TableTestResult.FullTime}" />
                     <GridViewColumn Header="Avg Single Hash Time [s]" DisplayMemberBinding="{Binding TestsAndTestResults.TableTestResult.AvgTime}" />
                     <GridViewColumn Header="CPU" DisplayMemberBinding="{Binding TablePC.TableCPU.CPUName}" />

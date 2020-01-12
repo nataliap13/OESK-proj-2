@@ -50,8 +50,17 @@ namespace OESK
                 new {TestsAndTestResults = testsAndTestResults, TablePC = tablePC })
                 .OrderBy(x => x.TestsAndTestResults.TableTestResult.FullTime)
                 .ToList();
-
-            ListViewMain.ItemsSource = TestsAndTestResultsAndPCs;
+            ///Adding numeration to listView
+            List<object> lista = new List<object>();
+            foreach (var item in TestsAndTestResultsAndPCs)
+            {
+                var index = TestsAndTestResultsAndPCs.FindIndex
+                    (x => x.TestsAndTestResults.TableTestResult.IDTestResult == item.TestsAndTestResults.TableTestResult.IDTestResult);
+                var newObj = new { Index = index+1, TestsAndTestResults = item.TestsAndTestResults, TablePC = item.TablePC, };
+                lista.Add(newObj);
+            }
+            //ListViewMain.ItemsSource = TestsAndTestResultsAndPCs;
+            ListViewMain.ItemsSource = lista;
             return;
         }
     }
