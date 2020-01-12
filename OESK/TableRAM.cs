@@ -13,5 +13,7 @@ namespace OESK
         public int IDRAM { get; set; }
         public int RAMCapacity { get; set; }
         public int RAMFrequency { get; set; }
+
+        public virtual List<TablePC> TablePC { get; set; }
     }
 }

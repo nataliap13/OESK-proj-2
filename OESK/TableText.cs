@@ -13,6 +13,7 @@ namespace OESK
         public int IDText { get; set; }
 
         public string Text { get; set; }
+
         public virtual List<TableTestResult> TableTestResult { get; set; }
     }
 }

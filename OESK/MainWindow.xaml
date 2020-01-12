@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OESK"
         mc:Ignorable="d"
-        Title="Test szybkości działania wybranych funkcji skrótu" MinWidth="650" MinHeight="300" Width="650" Height="300">
+        Title="Test szybkości działania wybranych funkcji skrótu" MinWidth="670" MinHeight="300" Width="650" Height="300">
     <Grid>
-        <TextBlock Name="TxtBlockFullTime" Text="Czas testu" HorizontalAlignment="Left" Margin="123,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="100"/>
+        <TextBlock Name="TxtBlockFullTime" Text="Czas testu" HorizontalAlignment="Left" Margin="185,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="100"/>
 
         <Button Name="BtnStart" Content="Start" Margin="10,10,0,0" VerticalAlignment="Top" Click="BtnStart_Click" HorizontalAlignment="Left" Width="108" />
         <ListView Name="ListViewMain" Margin="10,35,10,10">
@@ -16,11 +16,16 @@
                     <GridViewColumn Header="Function Name" DisplayMemberBinding="{Binding FunctionName}" />
                     <GridViewColumn Header="Text Length" DisplayMemberBinding="{Binding TextLength}" />
                     <GridViewColumn Header="Full Test Time [s]" DisplayMemberBinding="{Binding TestTimeInSeconds}" />
-                    <GridViewColumn Header="Avg Test Time [s]" DisplayMemberBinding="{Binding AvgTimeInSeconds}" />
+                    <GridViewColumn Header="Avg Single Hash Time [s]" DisplayMemberBinding="{Binding AvgTimeInSeconds}" />
                 </GridView>
             </ListView.View>
         </ListView>
         <Button Name="BtnMyPC" Content="MyPC" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="BtnMyPC_Click"/>
+        <ComboBox Name="CmbBxFunction" HorizontalAlignment="Left" Margin="123,10,0,0" VerticalAlignment="Top" Width="57" Height="20">
+            <ComboBoxItem IsSelected="True">MD5</ComboBoxItem>
+            <ComboBoxItem>SHA1</ComboBoxItem>
+            <ComboBoxItem>SHA256</ComboBoxItem>
+        </ComboBox>
 
     </Grid>
 </Window>

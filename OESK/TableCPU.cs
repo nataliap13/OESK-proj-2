@@ -12,5 +12,7 @@ namespace OESK
         [Key]
         public int IDCPU { get; set; }
         public string CPUName { get; set; }
+
+        public virtual List<TablePC> TablePC { get; set; }
     }
 }

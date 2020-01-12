@@ -1,0 +1,24 @@
+﻿<Window x:Class="OESK.ResultsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OESK"
+        mc:Ignorable="d"
+        
+        Title="Benchmark Results" MinWidth="750" MinHeight="300" Width="750" Height="300">
+    <Grid>
+        <ListView Name="ListViewMain" Margin="10,35,10,10">
+            <ListView.View>
+                <GridView>
+
+                    <GridViewColumn Header="Full Test Time [s]" DisplayMemberBinding="{Binding TestsAndTestResults.TableTestResult.FullTime}" />
+                    <GridViewColumn Header="Avg Single Hash Time [s]" DisplayMemberBinding="{Binding TestsAndTestResults.TableTestResult.AvgTime}" />
+                    <GridViewColumn Header="CPU" DisplayMemberBinding="{Binding TablePC.TableCPU.CPUName}" />
+                    <GridViewColumn Header="RAM Frequency [MHz]" DisplayMemberBinding="{Binding TablePC.TableRAM.RAMFrequency}" />
+                    <GridViewColumn Header="RAM Capacity [GB]" DisplayMemberBinding="{Binding TablePC.TableRAM.RAMCapacity}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</Window>

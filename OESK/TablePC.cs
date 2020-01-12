@@ -17,5 +17,7 @@ namespace OESK
 
         public int IDRAM { get; set; }//FK
         public virtual TableRAM TableRAM { get; set; }
+
+        public virtual List<TableTest> TableTest { get; set; }
     }
 }

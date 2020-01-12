@@ -396,22 +396,23 @@ namespace OESK
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
             var begin = DateTime.Now;
-            //var MD5Times = new List<TimeSpan>();
-            //var SHA1Times = new List<TimeSpan>();
-            //var SHA256Times = new List<TimeSpan>();
+
+            //switch(CmbBxFunction.SelectionBoxItem.ToString())
+            //{ }
             int IDMD5 = SearchForIDFunctionInDatabaseAddIfNotExist("MD5");
             int IDSHA1 = SearchForIDFunctionInDatabaseAddIfNotExist("SHA1");
             int IDSHA256 = SearchForIDFunctionInDatabaseAddIfNotExist("SHA256");
+            int IDText = 0;
             try
             {
                 var listOfCalcResults = new List<TableCalcParams>();
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 1; i++)
                 {
                     //text += new StringBuilder(text.Length * 9).Insert(0, text, 9).ToString();
                     //text = string.Empty;
                     var textLength = Convert.ToInt32(Math.Pow(10, i));
                     var text = new String('A', textLength);
-                    var IDText = SearchForIDTextInDatabaseAddIfNotExist(text);
+                    IDText = SearchForIDTextInDatabaseAddIfNotExist(text);
                     TimeSpan MD5Time;
                     TimeSpan SHA1Time;
                     TimeSpan SHA256Time;
@@ -436,6 +437,9 @@ namespace OESK
                 }
                 ListViewMain.ItemsSource = listOfCalcResults;
                 TxtBlockFullTime.Text = (DateTime.Now - begin).ToString();
+
+                var win2 = new ResultsWindow(IDMD5, IDText);
+                win2.Show();
             }
             catch (Exception ex)
             { MessageBox.Show("Error: " + ex.Message); MessageBox.Show(ex.InnerException.Message); }

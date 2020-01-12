@@ -12,5 +12,7 @@ namespace OESK
         [Key]
         public int IDFunction { get; set; }
         public string FunctionName { get; set; }
+
+        public virtual List<TableTest> TableTest { get; set; }
     }
 }

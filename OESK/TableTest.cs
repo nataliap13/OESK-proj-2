@@ -17,5 +17,7 @@ namespace OESK
 
         public int IDFunction { get; set; }//FK
         public virtual TableFunction TableFunction { get; set; }
+
+        public virtual List<TableTestResult> TableTestResult { get; set; }
     }
 }
