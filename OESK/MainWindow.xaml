@@ -11,7 +11,7 @@
 
         <TextBlock Text="Funkcja skrótu" HorizontalAlignment="Left" TextAlignment="Center" Margin="123,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="80"/>
         <ComboBox Name="CmbBxFunction" Loaded="CmbBxFunction_Loaded" SelectionChanged="CmbBxFunction_SelectionChanged" HorizontalAlignment="Left" Margin="123,35,0,0" VerticalAlignment="Top" Width="80" Height="20"/>
-        
+
         <TextBlock Text="Długość tekstu" HorizontalAlignment="Left" TextAlignment="Center" Margin="208,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="85"/>
         <ComboBox Name="CmbBxTxtLen" Loaded="CmbBxTxtLen_Loaded" SelectionChanged="CmbBxTxtLen_SelectionChanged" HorizontalAlignment="Left" Margin="208,35,0,0" VerticalAlignment="Top" Width="85" Height="20"/>
 
@@ -19,15 +19,18 @@
         <TextBlock Name="TxtBlockFullTime" Text="" HorizontalAlignment="Left" Margin="298,35,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="70"/>
 
         <TextBlock Text="Średni czas 1 cyklu" TextAlignment="Center" HorizontalAlignment="Left" Margin="373,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="100"/>
-        <TextBlock Name="TxtBlockAvgTime" Text="" HorizontalAlignment="Left" Margin="373,35,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="100"/>
-        
+        <TextBlock Name="TxtBlockAvgTime" Text="" TextAlignment="Center" HorizontalAlignment="Left" Margin="373,35,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="100"/>
+
+        <TextBlock Text="Zajmujesz miejsce nr " HorizontalAlignment="Left" Margin="493,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="114"/>
+        <TextBlock Name="TxtBlockScore" Text="" Margin="612,10,90,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20"/>
+
         <Button Name="BtnMyPC" Content="MyPC" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="BtnMyPC_Click"/>
 
 
         <ListView Name="ListViewMain" Margin="10,60,10,10">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="No." DisplayMemberBinding="{Binding Index}" />
+                    <GridViewColumn Header="No." DisplayMemberBinding="{Binding Index}" Width="40"/>
                     <GridViewColumn Header="Full Test Time [s]" DisplayMemberBinding="{Binding TestsAndTestResults.TableTestResult.FullTime}" />
                     <GridViewColumn Header="Avg Single Hash Time [s]" DisplayMemberBinding="{Binding TestsAndTestResults.TableTestResult.AvgTime}" />
                     <GridViewColumn Header="CPU" DisplayMemberBinding="{Binding TablePC.TableCPU.CPUName}" />

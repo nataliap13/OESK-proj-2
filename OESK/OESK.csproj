@@ -91,9 +91,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ResultsWindow.xaml.cs">
-      <DependentUpon>ResultsWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MySQLiteDbContext.cs" />
     <Compile Include="SQLiteConfiguration.cs" />
     <Compile Include="TableCalcParams.cs" />
@@ -105,10 +102,6 @@
     <Compile Include="TableTestResult.cs" />
     <Compile Include="TableText.cs" />
     <Compile Include="TimeSpanConverter.cs" />
-    <Page Include="ResultsWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

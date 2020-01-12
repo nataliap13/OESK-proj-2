@@ -303,8 +303,7 @@ namespace OESK
             TxtBlockFullTime.Text = (DateTime.Now - begin).ToString();
         }*/
 
-        private void SaveTestToDatabase(int IDPC, int IDFunction, int IDText,
-            TableCalcParams tableCalcParams)
+        private int SaveTestToDatabase(int IDPC, int IDFunction, int IDText, TableCalcParams tableCalcParams)
         {
             try
             {
@@ -322,9 +321,11 @@ namespace OESK
                 entityTestResult.AvgTime = tableCalcParams.AvgTimeInSeconds;
                 conn.TableTestResult.Add(entityTestResult);
                 conn.SaveChanges();
+                return entityTest.IDTest;
             }
             catch (Exception e)
             { MessageBox.Show("Error: " + e.Message); }
+            return -1;
         }
 
         private int SearchForIDFunctionInDatabaseAddIfNotExist(string functionName)
@@ -431,10 +432,10 @@ namespace OESK
             var function = CmbBxFunction.SelectionBoxItem.ToString();
             var IDFunction = SearchForIDFunctionInDatabaseAddIfNotExist(function);
             int IDText = 0;
+            int IDTest = 0;
             TimeSpan CalcTime = new TimeSpan();
             try
             {
-                var listOfCalcResults = new List<TableCalcParams>();
                 //for (int i = 0; i < 3; i++)
                 {
                     //text += new StringBuilder(text.Length * 9).Insert(0, text, 9).ToString();
@@ -459,21 +460,19 @@ namespace OESK
 
                     //Add to UI Table/List
                     var tableCalcParams = new TableCalcParams(function, textLength, numberOfIterations, CalcTime);
-                    listOfCalcResults.Add(tableCalcParams);
-                    SaveTestToDatabase(IDPC, IDFunction, IDText, tableCalcParams);
+                    IDTest = SaveTestToDatabase(IDPC, IDFunction, IDText, tableCalcParams);
                     TxtBlockFullTime.Text = tableCalcParams.TestTimeInSeconds;
                     TxtBlockAvgTime.Text = tableCalcParams.AvgTimeInSeconds;
                 }
-                //ListViewMain.ItemsSource = listOfCalcResults;
                 //var win2 = new ResultsWindow(IDFunction, IDText);
                 //win2.Show();
-                DownloadAllDBResults(IDFunction, IDText);
+                DownloadAllDBResults(IDFunction, IDText, IDTest);
             }
             catch (Exception ex)
             { MessageBox.Show("Error: " + ex.Message); MessageBox.Show(ex.InnerException.Message); }
         }
 
-        private void DownloadAllDBResults(int IDFunction, int IDText)
+        private void DownloadAllDBResults(int IDFunction, int IDText, int IDTest)
         {
             var TestsAndTestResults = conn.TableTest.Join(conn.TableTestResult,
                 TableTest => TableTest.IDTest,
@@ -498,7 +497,12 @@ namespace OESK
                     (x => x.TestsAndTestResults.TableTestResult.IDTestResult == item.TestsAndTestResults.TableTestResult.IDTestResult);
                 var newObj = new { Index = index + 1, TestsAndTestResults = item.TestsAndTestResults, TablePC = item.TablePC, };
                 lista.Add(newObj);
+
+                //find user position in ranking
+                if(newObj.TestsAndTestResults.TableTest.IDTest == IDTest)
+                { TxtBlockScore.Text = newObj.Index.ToString(); }
             }
+            
             //ListViewMain.ItemsSource = TestsAndTestResultsAndPCs;
             ListViewMain.ItemsSource = lista;
             return;
