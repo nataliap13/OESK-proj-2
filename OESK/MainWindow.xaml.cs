@@ -45,6 +45,7 @@ namespace OESK
             IDPC = SearchForIDPCInDatabaseAddIfNotExist(IDCPU, IDRAM);
 
         }
+        #region CmbBxFunction
         private void CmbBxFunction_Loaded(object sender, RoutedEventArgs e)
         {
             var functionsList = conn.TableFunction.Select(x => x).OrderBy(x => x.IDFunction).ToList();
@@ -58,6 +59,23 @@ namespace OESK
         private void CmbBxFunction_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
         }
+        #endregion
+
+        #region CmbBxTxtLen
+        private void CmbBxTxtLen_Loaded(object sender, RoutedEventArgs e)
+        {
+            var TextLengthsList = conn.TableText.Select(x => x).OrderBy(x => x.Text.Length).ToList();
+            var data = new List<int>();
+            foreach (var item in TextLengthsList)
+            { data.Add(item.Text.Length); }
+            CmbBxTxtLen.ItemsSource = data;
+            CmbBxTxtLen.SelectedIndex = 0;
+        }
+
+        private void CmbBxTxtLen_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+        }
+        #endregion
 
         private void ReadPCConfiguration(out string CPUName, out int RAMCapacity, out int RAMFrequency)
         {
@@ -416,11 +434,13 @@ namespace OESK
             try
             {
                 var listOfCalcResults = new List<TableCalcParams>();
-                for (int i = 0; i < 1; i++)
+                //for (int i = 0; i < 3; i++)
                 {
                     //text += new StringBuilder(text.Length * 9).Insert(0, text, 9).ToString();
                     //text = string.Empty;
-                    var textLength = Convert.ToInt32(Math.Pow(10, i));
+                    
+                    //var textLength = Convert.ToInt32(Math.Pow(10, i));
+                    var textLength = Convert.ToInt32(Convert.ToInt32(CmbBxTxtLen.SelectionBoxItem.ToString()));
                     var text = new String('A', textLength);
                     IDText = SearchForIDTextInDatabaseAddIfNotExist(text);
                     TimeSpan CalcTime = new TimeSpan();

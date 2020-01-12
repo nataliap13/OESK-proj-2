@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Test szybkości działania wybranych funkcji skrótu" MinWidth="670" MinHeight="300" Width="650" Height="300">
     <Grid>
-        <TextBlock Name="TxtBlockFullTime" Text="Czas testu" HorizontalAlignment="Left" Margin="185,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="100"/>
+        <TextBlock Name="TxtBlockFullTime" Text="Czas testu" HorizontalAlignment="Left" Margin="273,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="100"/>
 
         <Button Name="BtnStart" Content="Start" Margin="10,10,0,0" VerticalAlignment="Top" Click="BtnStart_Click" HorizontalAlignment="Left" Width="108" />
         <ListView Name="ListViewMain" Margin="10,35,10,10">
@@ -22,8 +22,8 @@
         </ListView>
         <Button Name="BtnMyPC" Content="MyPC" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="BtnMyPC_Click"/>
 
-        <ComboBox Name="CmbBxFunction" Loaded="CmbBxFunction_Loaded" SelectionChanged="CmbBxFunction_SelectionChanged" HorizontalAlignment="Left" Margin="123,10,0,0" VerticalAlignment="Top" Width="57" Height="20">
-        </ComboBox>
+        <ComboBox Name="CmbBxFunction" Loaded="CmbBxFunction_Loaded" SelectionChanged="CmbBxFunction_SelectionChanged" HorizontalAlignment="Left" Margin="123,10,0,0" VerticalAlignment="Top" Width="75" Height="20"/>
+        <ComboBox Name="CmbBxTxtLen" Loaded="CmbBxTxtLen_Loaded" SelectionChanged="CmbBxTxtLen_SelectionChanged" HorizontalAlignment="Left" Margin="203,10,0,0" VerticalAlignment="Top" Width="65" Height="20"/>
 
     </Grid>
 </Window>
