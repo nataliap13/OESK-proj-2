@@ -43,6 +43,20 @@ namespace OESK
             IDCPU = SearchForIDCPUInDatabaseAddIfNotExist(CPUName);
             IDRAM = SearchForIDRAMInDatabaseAddIfNotExist(RAMCapacity, RAMFrequency);
             IDPC = SearchForIDPCInDatabaseAddIfNotExist(IDCPU, IDRAM);
+
+        }
+        private void CmbBxFunction_Loaded(object sender, RoutedEventArgs e)
+        {
+            var functionsList = conn.TableFunction.Select(x=>x).OrderBy(x => x.IDFunction).ToList();
+            List<string> data = new List<string>();
+            foreach (var item in functionsList)
+            { data.Add(item.FunctionName); }
+            CmbBxFunction.ItemsSource = data;
+            CmbBxFunction.SelectedIndex = 0;
+        }
+
+        private void CmbBxFunction_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
         }
 
         private void ReadPCConfiguration(out string CPUName, out int RAMCapacity, out int RAMFrequency)
@@ -451,7 +465,7 @@ namespace OESK
             int RAMCapacity;
             int RAMFrequency;
             ReadPCConfiguration(out CPUName, out RAMCapacity, out RAMFrequency);
-            MessageBox.Show("CPU: "+CPUName + "\nRAM Capacity: "
+            MessageBox.Show("CPU: " + CPUName + "\nRAM Capacity: "
                 + RAMCapacity + "\nRAM Frequency: " + RAMFrequency);
         }
     }
