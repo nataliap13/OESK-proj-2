@@ -47,7 +47,7 @@ namespace OESK
         }
         private void CmbBxFunction_Loaded(object sender, RoutedEventArgs e)
         {
-            var functionsList = conn.TableFunction.Select(x=>x).OrderBy(x => x.IDFunction).ToList();
+            var functionsList = conn.TableFunction.Select(x => x).OrderBy(x => x.IDFunction).ToList();
             List<string> data = new List<string>();
             foreach (var item in functionsList)
             { data.Add(item.FunctionName); }
@@ -410,12 +410,8 @@ namespace OESK
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
             var begin = DateTime.Now;
-
-            //switch(CmbBxFunction.SelectionBoxItem.ToString())
-            //{ }
-            int IDMD5 = SearchForIDFunctionInDatabaseAddIfNotExist("MD5");
-            int IDSHA1 = SearchForIDFunctionInDatabaseAddIfNotExist("SHA1");
-            int IDSHA256 = SearchForIDFunctionInDatabaseAddIfNotExist("SHA256");
+            var function = CmbBxFunction.SelectionBoxItem.ToString();
+            var IDFunction = SearchForIDFunctionInDatabaseAddIfNotExist(function);
             int IDText = 0;
             try
             {
@@ -427,32 +423,29 @@ namespace OESK
                     var textLength = Convert.ToInt32(Math.Pow(10, i));
                     var text = new String('A', textLength);
                     IDText = SearchForIDTextInDatabaseAddIfNotExist(text);
-                    TimeSpan MD5Time;
-                    TimeSpan SHA1Time;
-                    TimeSpan SHA256Time;
+                    TimeSpan CalcTime = new TimeSpan();
                     int numberOfIterations = 100000;
-                    GetMd5Hashes(ref text, out MD5Time, numberOfIterations);
-                    GetSHA1Hashes(ref text, out SHA1Time, numberOfIterations);
-                    GetSHA256Hashes(ref text, out SHA256Time, numberOfIterations);
+                    switch (function)
+                    {
+                        case "MD5":
+                            { GetMd5Hashes(ref text, out CalcTime, numberOfIterations); break; }
+                        case "SHA1":
+                            { GetSHA1Hashes(ref text, out CalcTime, numberOfIterations); break; }
+                        case "SHA256":
+                            { GetSHA256Hashes(ref text, out CalcTime, numberOfIterations); break; }
+                        default:
+                            { MessageBox.Show("Function Error!"); break; }
+                    }
 
-                    /////Add to UI Table/List
-                    var MD5TableCalcParams = new TableCalcParams("MD5", textLength, numberOfIterations, MD5Time);
-                    listOfCalcResults.Add(MD5TableCalcParams);
-
-                    var SHA1TableCalcParams = new TableCalcParams("SHA1", textLength, numberOfIterations, SHA1Time);
-                    listOfCalcResults.Add(SHA1TableCalcParams);
-
-                    var SHA256TableCalcParams = new TableCalcParams("SHA256", textLength, numberOfIterations, SHA256Time);
-                    listOfCalcResults.Add(SHA256TableCalcParams);
-
-                    SaveTestToDatabase(IDPC, IDMD5, IDText, MD5TableCalcParams);
-                    SaveTestToDatabase(IDPC, IDSHA1, IDText, SHA1TableCalcParams);
-                    SaveTestToDatabase(IDPC, IDSHA256, IDText, SHA256TableCalcParams);
+                    //Add to UI Table/List
+                    var TableCalcParams = new TableCalcParams(function, textLength, numberOfIterations, CalcTime);
+                    listOfCalcResults.Add(TableCalcParams);
+                    SaveTestToDatabase(IDPC, IDFunction, IDText, TableCalcParams);
                 }
                 ListViewMain.ItemsSource = listOfCalcResults;
                 TxtBlockFullTime.Text = (DateTime.Now - begin).ToString();
 
-                var win2 = new ResultsWindow(IDMD5, IDText);
+                var win2 = new ResultsWindow(IDFunction, IDText);
                 win2.Show();
             }
             catch (Exception ex)

@@ -23,9 +23,6 @@
         <Button Name="BtnMyPC" Content="MyPC" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="BtnMyPC_Click"/>
 
         <ComboBox Name="CmbBxFunction" Loaded="CmbBxFunction_Loaded" SelectionChanged="CmbBxFunction_SelectionChanged" HorizontalAlignment="Left" Margin="123,10,0,0" VerticalAlignment="Top" Width="57" Height="20">
-            <!--<ComboBoxItem IsSelected="True">MD5</ComboBoxItem>
-            <ComboBoxItem>SHA1</ComboBoxItem>
-            <ComboBoxItem>SHA256</ComboBoxItem>-->
         </ComboBox>
 
     </Grid>
