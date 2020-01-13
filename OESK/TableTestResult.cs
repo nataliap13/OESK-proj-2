@@ -20,6 +20,5 @@ namespace OESK
 
         public int NumberOfIterations { get; set; }
         public string FullTime { get; set; }
-        public string AvgTime { get; set; }
     }
 }

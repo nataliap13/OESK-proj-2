@@ -12,9 +12,7 @@ namespace OESK
         public int TextLength { get; private set; }
         public int NumberOfIterations { get; private set; }
         public string TestTimeInSeconds { get; private set; }
-        public string AvgTimeInSeconds { get; private set; }
         public TimeSpan TestTimeInSecondsAsTimeSpan { get; private set; }
-        public TimeSpan AvgTimeInSecondsAsTimespan { get; private set; }
 
         public TableCalcParams(string functionName, int textLength, int NumberOfIterations,
             TimeSpan testTime)
@@ -22,9 +20,7 @@ namespace OESK
             FunctionName = functionName;
             TextLength = textLength;
             TestTimeInSecondsAsTimeSpan = testTime;
-            AvgTimeInSecondsAsTimespan = LongTicksToTimespan(testTime.Ticks / NumberOfIterations);
             TestTimeInSeconds = TimeSpanConverter.ToSecondsMiliseconds(testTime);
-            AvgTimeInSeconds = TimeSpanConverter.ToSecondsMiliseconds(AvgTimeInSecondsAsTimespan);
         }
 
         private static TimeSpan LongTicksToTimespan(long value)

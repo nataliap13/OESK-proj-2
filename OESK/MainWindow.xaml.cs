@@ -61,22 +61,6 @@ namespace OESK
         }
         #endregion
 
-        #region CmbBxTxtLen
-        private void CmbBxTxtLen_Loaded(object sender, RoutedEventArgs e)
-        {
-            var TextLengthsList = conn.TableText.Select(x => x).OrderBy(x => x.Text.Length).ToList();
-            var data = new List<int>();
-            foreach (var item in TextLengthsList)
-            { data.Add(item.Text.Length); }
-            CmbBxTxtLen.ItemsSource = data;
-            CmbBxTxtLen.SelectedIndex = 0;
-        }
-
-        private void CmbBxTxtLen_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-        }
-        #endregion
-
         private void ReadPCConfiguration(out string CPUName, out int RAMCapacity, out int RAMFrequency)
         {
             CPUName = string.Empty;
@@ -318,7 +302,6 @@ namespace OESK
                 entityTestResult.IDText = IDText;
                 entityTestResult.NumberOfIterations = tableCalcParams.NumberOfIterations;
                 entityTestResult.FullTime = tableCalcParams.TestTimeInSeconds;
-                entityTestResult.AvgTime = tableCalcParams.AvgTimeInSeconds;
                 conn.TableTestResult.Add(entityTestResult);
                 conn.SaveChanges();
                 return entityTest.IDTest;
@@ -433,19 +416,16 @@ namespace OESK
             var IDFunction = SearchForIDFunctionInDatabaseAddIfNotExist(function);
             int IDText = 0;
             int IDTest = 0;
-            TimeSpan CalcTime = new TimeSpan();
+            var textLength = 100;
+            var text = new String('A', textLength);
+            int numberOfIterations = 100000;
+            IDText = SearchForIDTextInDatabaseAddIfNotExist(text);
+            var listOfTimes = new List<TimeSpan>();
             try
             {
-                //for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 10; i++)
                 {
-                    //text += new StringBuilder(text.Length * 9).Insert(0, text, 9).ToString();
-                    //text = string.Empty;
-
-                    //var textLength = Convert.ToInt32(Math.Pow(10, i));
-                    var textLength = Convert.ToInt32(Convert.ToInt32(CmbBxTxtLen.SelectionBoxItem.ToString()));
-                    var text = new String('A', textLength);
-                    IDText = SearchForIDTextInDatabaseAddIfNotExist(text);
-                    int numberOfIterations = 100000;
+                    TimeSpan CalcTime = new TimeSpan();
                     switch (function)
                     {
                         case "MD5":
@@ -457,13 +437,14 @@ namespace OESK
                         default:
                             { MessageBox.Show("Function Error!"); break; }
                     }
-
-                    //Add to UI Table/List
-                    var tableCalcParams = new TableCalcParams(function, textLength, numberOfIterations, CalcTime);
-                    IDTest = SaveTestToDatabase(IDPC, IDFunction, IDText, tableCalcParams);
-                    TxtBlockFullTime.Text = tableCalcParams.TestTimeInSeconds;
-                    TxtBlockAvgTime.Text = tableCalcParams.AvgTimeInSeconds;
+                    listOfTimes.Add(CalcTime);
                 }
+                var bestTime = listOfTimes.Min();
+                //Add best result to UI Table/List
+                var tableCalcParams = new TableCalcParams(function, textLength, numberOfIterations, bestTime);
+                IDTest = SaveTestToDatabase(IDPC, IDFunction, IDText, tableCalcParams);
+                TxtBlockFullTime.Text = tableCalcParams.TestTimeInSeconds;
+                TxtBlockPoints.Text = CalculatePoints(numberOfIterations, bestTime).ToString() + " pkt";
                 //var win2 = new ResultsWindow(IDFunction, IDText);
                 //win2.Show();
                 DownloadAllDBResults(IDFunction, IDText, IDTest);
@@ -471,6 +452,9 @@ namespace OESK
             catch (Exception ex)
             { MessageBox.Show("Error: " + ex.Message); MessageBox.Show(ex.InnerException.Message); }
         }
+
+        private double CalculatePoints(int numberOfIterations, TimeSpan time)
+        { return Math.Round((Convert.ToDouble(numberOfIterations) / time.TotalSeconds), 0); }
 
         private void DownloadAllDBResults(int IDFunction, int IDText, int IDTest)
         {
@@ -495,14 +479,23 @@ namespace OESK
             {
                 var index = TestsAndTestResultsAndPCs.FindIndex
                     (x => x.TestsAndTestResults.TableTestResult.IDTestResult == item.TestsAndTestResults.TableTestResult.IDTestResult);
-                var newObj = new { Index = index + 1, TestsAndTestResults = item.TestsAndTestResults, TablePC = item.TablePC, };
+                var newObj = new { Index = index + 1,
+                    TestsAndTestResults = item.TestsAndTestResults, TablePC = item.TablePC, };
+                /*
+                var newObj = new
+                {
+                    Index = index + 1,
+                    Points = CalculatePoints(item.TestsAndTestResults.TableTestResult.NumberOfIterations, new TimeSpan(item.TestsAndTestResults.TableTestResult.FullTime),
+                 TestsAndTestResults = item.TestsAndTestResults, TablePC = item.TablePC, };
+                 */
+
                 lista.Add(newObj);
 
                 //find user position in ranking
-                if(newObj.TestsAndTestResults.TableTest.IDTest == IDTest)
+                if (newObj.TestsAndTestResults.TableTest.IDTest == IDTest)
                 { TxtBlockScore.Text = newObj.Index.ToString(); }
             }
-            
+
             //ListViewMain.ItemsSource = TestsAndTestResultsAndPCs;
             ListViewMain.ItemsSource = lista;
             return;
@@ -515,7 +508,7 @@ namespace OESK
             int RAMFrequency;
             ReadPCConfiguration(out CPUName, out RAMCapacity, out RAMFrequency);
             MessageBox.Show("CPU: " + CPUName + "\nRAM Capacity: "
-                + RAMCapacity + "\nRAM Frequency: " + RAMFrequency);
+                + RAMCapacity + " GB\nRAM Frequency: " + RAMFrequency + " MHz");
         }
     }
 }

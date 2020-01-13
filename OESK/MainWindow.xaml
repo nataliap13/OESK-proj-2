@@ -12,14 +12,11 @@
         <TextBlock Text="Funkcja skrótu" HorizontalAlignment="Left" TextAlignment="Center" Margin="123,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="80"/>
         <ComboBox Name="CmbBxFunction" Loaded="CmbBxFunction_Loaded" SelectionChanged="CmbBxFunction_SelectionChanged" HorizontalAlignment="Left" Margin="123,35,0,0" VerticalAlignment="Top" Width="80" Height="20"/>
 
-        <TextBlock Text="Długość tekstu" HorizontalAlignment="Left" TextAlignment="Center" Margin="208,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="85"/>
-        <ComboBox Name="CmbBxTxtLen" Loaded="CmbBxTxtLen_Loaded" SelectionChanged="CmbBxTxtLen_SelectionChanged" HorizontalAlignment="Left" Margin="208,35,0,0" VerticalAlignment="Top" Width="85" Height="20"/>
+        <TextBlock Text="Czas testu" HorizontalAlignment="Left" TextAlignment="Center" Margin="208,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="70"/>
+        <TextBlock Name="TxtBlockFullTime" Text="" HorizontalAlignment="Left" Margin="208,35,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="70"/>
 
-        <TextBlock Text="Czas testu" HorizontalAlignment="Left" TextAlignment="Center" Margin="298,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="70"/>
-        <TextBlock Name="TxtBlockFullTime" Text="" HorizontalAlignment="Left" Margin="298,35,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="70"/>
-
-        <TextBlock Text="Średni czas 1 cyklu" TextAlignment="Center" HorizontalAlignment="Left" Margin="373,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="100"/>
-        <TextBlock Name="TxtBlockAvgTime" Text="" TextAlignment="Center" HorizontalAlignment="Left" Margin="373,35,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="100"/>
+        <TextBlock Text="Ocena" HorizontalAlignment="Left" Margin="337,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="37"/>
+        <TextBlock Name="TxtBlockPoints" Text="0 pkt" HorizontalAlignment="Left" Margin="379,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="73"/>
 
         <TextBlock Text="Zajmujesz miejsce nr " HorizontalAlignment="Left" Margin="493,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="114"/>
         <TextBlock Name="TxtBlockScore" Text="" Margin="612,10,90,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20"/>
@@ -31,8 +28,7 @@
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="No." DisplayMemberBinding="{Binding Index}" Width="40"/>
-                    <GridViewColumn Header="Full Test Time [s]" DisplayMemberBinding="{Binding TestsAndTestResults.TableTestResult.FullTime}" />
-                    <GridViewColumn Header="Avg Single Hash Time [s]" DisplayMemberBinding="{Binding TestsAndTestResults.TableTestResult.AvgTime}" />
+                    <GridViewColumn Header="Test Time [s]" DisplayMemberBinding="{Binding TestsAndTestResults.TableTestResult.FullTime}" />
                     <GridViewColumn Header="CPU" DisplayMemberBinding="{Binding TablePC.TableCPU.CPUName}" />
                     <GridViewColumn Header="RAM Frequency [MHz]" DisplayMemberBinding="{Binding TablePC.TableRAM.RAMFrequency}" />
                     <GridViewColumn Header="RAM Capacity [GB]" DisplayMemberBinding="{Binding TablePC.TableRAM.RAMCapacity}" />
