@@ -16,6 +16,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 //using System.Windows.Shapes;
 using System.Management;
+using System.Globalization;
+using System.Threading;
 
 namespace OESK
 {
@@ -484,7 +486,8 @@ namespace OESK
                     TablePC = item.TablePC };
                 */
                 ///*
-                var splited = item.TestsAndTestResults.TableTestResult.FullTime.Split(',');
+                var splited = item.TestsAndTestResults.TableTestResult.FullTime.Split(new char[] { ',', '.' });
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("hr-HR");
                 var time = TimeSpan.Parse("0:0:0" + splited[0].ToString() + "," + splited[1].ToString());
                 var points = CalculatePoints(item.TestsAndTestResults.TableTestResult.NumberOfIterations, time);
                 var newObj = new
