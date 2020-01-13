@@ -45,8 +45,8 @@ namespace OESK
             IDCPU = SearchForIDCPUInDatabaseAddIfNotExist(CPUName);
             IDRAM = SearchForIDRAMInDatabaseAddIfNotExist(RAMCapacity, RAMFrequency);
             IDPC = SearchForIDPCInDatabaseAddIfNotExist(IDCPU, IDRAM);
-
         }
+
         #region CmbBxFunction
         private void CmbBxFunction_Loaded(object sender, RoutedEventArgs e)
         {
@@ -425,7 +425,7 @@ namespace OESK
             var text = new String('A', textLength);
             int IDText = SearchForIDTextInDatabaseAddIfNotExist(text);
             int numberOfIterations = 100000;
-            
+
             var listOfTimes = new List<TimeSpan>();
             try
             {
@@ -450,8 +450,7 @@ namespace OESK
                 var tableCalcParams = new TableCalcParams(function, textLength, numberOfIterations, bestTime);
                 IDTest = SaveTestToDatabase(IDPC, IDFunction, IDText, tableCalcParams);
                 TxtBlockPoints.Text = CalculatePoints(numberOfIterations, bestTime).ToString() + " pkt";
-                //var win2 = new ResultsWindow(IDFunction, IDText);
-                //win2.Show();
+
                 DownloadAllDBResults(IDFunction, IDText, IDTest);
             }
             catch (Exception ex)
@@ -463,9 +462,18 @@ namespace OESK
 
         private void DownloadAllDBResults(int IDFunction, int IDText, int IDTest)
         {
-            var tab = conn.TableTest.Where(x=> x.IDFunction == IDFunction)
-                .Where(x=>x.IDText == IDText)
+            var tab = conn.TableTest.Where(x => x.IDFunction == IDFunction)
+                .Where(x => x.IDText == IDText)
                 .OrderBy(x => x.FullTime).ToList();
+
+            var numberOfAll = tab.Count();
+
+            var foundObjects = new Dictionary<int, object>();
+            var searchingPositions = new List<int>();
+            searchingPositions.Add(Convert.ToInt32(numberOfAll * 3 / 4));//in 3/4 from top
+            searchingPositions.Add(Convert.ToInt32(numberOfAll / 2));//in 1/2 from top
+            searchingPositions.Add(Convert.ToInt32(numberOfAll / 4));//in 1/4 from top
+            searchingPositions.Add(1);//the best
 
             ///Adding numeration to listView
             List<object> lista = new List<object>();
@@ -493,9 +501,22 @@ namespace OESK
 
                 //find user position in ranking
                 if (newObj.TableTest.IDTest == IDTest)
-                { TxtBlockScore.Text = newObj.Index.ToString(); }
-            }
+                {
+                    TxtBlockScore.Text = newObj.Index.ToString();
+                    foundObjects.Add(newObj.Index, newObj);
 
+                    if (searchingPositions.Contains(newObj.Index))//do not duplicate same position
+                    { searchingPositions.Remove(newObj.Index); }
+                }
+                else
+                {
+                    if (searchingPositions.Contains(newObj.Index))
+                    {
+                        foundObjects.Add(newObj.Index, newObj);
+                        searchingPositions.Remove(newObj.Index);
+                    }
+                }
+            }
             //ListViewMain.ItemsSource = TestsAndTestResultsAndPCs;
             ListViewMain.ItemsSource = lista;
             return;
