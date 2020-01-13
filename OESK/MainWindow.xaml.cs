@@ -468,7 +468,7 @@ namespace OESK
 
             var numberOfAll = tab.Count();
 
-            var foundObjects = new Dictionary<int, object>();
+            var foundObjects = new Dictionary<double, TableTest>();
             var searchingPositions = new List<int>();
             searchingPositions.Add(Convert.ToInt32(numberOfAll * 3 / 4));//in 3/4 from top
             searchingPositions.Add(Convert.ToInt32(numberOfAll / 2));//in 1/2 from top
@@ -503,7 +503,7 @@ namespace OESK
                 if (newObj.TableTest.IDTest == IDTest)
                 {
                     TxtBlockScore.Text = newObj.Index.ToString();
-                    foundObjects.Add(newObj.Index, newObj);
+                    foundObjects.Add(newObj.Index, newObj.TableTest);
 
                     if (searchingPositions.Contains(newObj.Index))//do not duplicate same position
                     { searchingPositions.Remove(newObj.Index); }
@@ -512,7 +512,7 @@ namespace OESK
                 {
                     if (searchingPositions.Contains(newObj.Index))
                     {
-                        foundObjects.Add(newObj.Index, newObj);
+                        foundObjects.Add(newObj.Index, newObj.TableTest);
                         searchingPositions.Remove(newObj.Index);
                     }
                 }
