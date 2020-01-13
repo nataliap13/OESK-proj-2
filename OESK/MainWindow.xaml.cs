@@ -60,6 +60,14 @@ namespace OESK
 
         private void CmbBxFunction_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            //updateListView
+            var function = CmbBxFunction.SelectedItem.ToString();
+            var IDFunction = SearchForIDFunctionInDatabaseAddIfNotExist(function);
+            var textLength = 100;
+            var text = new String('A', textLength);
+            int IDText = SearchForIDTextInDatabaseAddIfNotExist(text);
+
+            DownloadAllDBResults(IDFunction, IDText, 0);
         }
         #endregion
 
@@ -412,12 +420,12 @@ namespace OESK
             var begin = DateTime.Now;
             var function = CmbBxFunction.SelectionBoxItem.ToString();
             var IDFunction = SearchForIDFunctionInDatabaseAddIfNotExist(function);
-            int IDText = 0;
             int IDTest = 0;
             var textLength = 100;
             var text = new String('A', textLength);
+            int IDText = SearchForIDTextInDatabaseAddIfNotExist(text);
             int numberOfIterations = 100000;
-            IDText = SearchForIDTextInDatabaseAddIfNotExist(text);
+            
             var listOfTimes = new List<TimeSpan>();
             try
             {
@@ -455,7 +463,9 @@ namespace OESK
 
         private void DownloadAllDBResults(int IDFunction, int IDText, int IDTest)
         {
-            var tab = conn.TableTest.OrderBy(x => x.FullTime).ToList();
+            var tab = conn.TableTest.Where(x=> x.IDFunction == IDFunction)
+                .Where(x=>x.IDText == IDText)
+                .OrderBy(x => x.FullTime).ToList();
 
             ///Adding numeration to listView
             List<object> lista = new List<object>();
