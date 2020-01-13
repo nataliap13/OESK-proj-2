@@ -99,7 +99,6 @@
     <Compile Include="TablePC.cs" />
     <Compile Include="TableCPU.cs" />
     <Compile Include="TableTest.cs" />
-    <Compile Include="TableTestResult.cs" />
     <Compile Include="TableText.cs" />
     <Compile Include="TimeSpanConverter.cs" />
     <Page Include="MainWindow.xaml">

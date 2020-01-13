@@ -18,6 +18,10 @@ namespace OESK
         public int IDFunction { get; set; }//FK
         public virtual TableFunction TableFunction { get; set; }
 
-        public virtual List<TableTestResult> TableTestResult { get; set; }
+        public int IDText { get; set; }//FK
+        public virtual TableText TableText { get; set; }
+
+        public int NumberOfIterations { get; set; }
+        public string FullTime { get; set; }
     }
 }

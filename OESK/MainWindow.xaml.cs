@@ -296,15 +296,11 @@ namespace OESK
                 var entityTest = new TableTest();
                 entityTest.IDPC = IDPC;
                 entityTest.IDFunction = IDFunction;
+                entityTest.IDTest = entityTest.IDTest;
+                entityTest.IDText = IDText;
+                entityTest.NumberOfIterations = tableCalcParams.NumberOfIterations;
+                entityTest.FullTime = tableCalcParams.TestTimeInSeconds;
                 entityTest = conn.TableTest.Add(entityTest);
-                conn.SaveChanges();
-
-                var entityTestResult = new TableTestResult();
-                entityTestResult.IDTest = entityTest.IDTest;
-                entityTestResult.IDText = IDText;
-                entityTestResult.NumberOfIterations = tableCalcParams.NumberOfIterations;
-                entityTestResult.FullTime = tableCalcParams.TestTimeInSeconds;
-                conn.TableTestResult.Add(entityTestResult);
                 conn.SaveChanges();
                 return entityTest.IDTest;
             }
@@ -459,14 +455,14 @@ namespace OESK
 
         private void DownloadAllDBResults(int IDFunction, int IDText, int IDTest)
         {
-            var tab = conn.TableTestResult.OrderBy(x => x.FullTime).ToList();
+            var tab = conn.TableTest.OrderBy(x => x.FullTime).ToList();
 
             ///Adding numeration to listView
             List<object> lista = new List<object>();
             foreach (var item in tab)
             {
                 var index = tab.FindIndex
-                    (x => x.IDTestResult == item.IDTestResult);
+                    (x => x.IDTest == item.IDTest);
                 /*
                 var newObj = new { Index = index + 1,
                     TestsAndTestResults = item.TestsAndTestResults,
@@ -481,12 +477,12 @@ namespace OESK
                 {
                     Index = index + 1,
                     Points = points,
-                    TableTestResult = item
+                    TableTest = item
                 };
                 lista.Add(newObj);
 
                 //find user position in ranking
-                if (newObj.TableTestResult.IDTest == IDTest)
+                if (newObj.TableTest.IDTest == IDTest)
                 { TxtBlockScore.Text = newObj.Index.ToString(); }
             }
 

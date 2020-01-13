@@ -14,6 +14,6 @@ namespace OESK
 
         public string Text { get; set; }
 
-        public virtual List<TableTestResult> TableTestResult { get; set; }
+        public virtual List<TableTest> TableTest { get; set; }
     }
 }

@@ -32,7 +32,6 @@ namespace OESK
         public DbSet<TablePC> TablePC { get; set; }
         public DbSet<TableRAM> TableRAM { get; set; }
         public DbSet<TableTest> TableTest { get; set; }
-        public DbSet<TableTestResult> TableTestResult { get; set; }
         public DbSet<TableText> TableText { get; set; }
     }
 }
