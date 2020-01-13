@@ -459,50 +459,34 @@ namespace OESK
 
         private void DownloadAllDBResults(int IDFunction, int IDText, int IDTest)
         {
-            var TestsAndTestResults = conn.TableTest.Join(conn.TableTestResult,
-                TableTest => TableTest.IDTest,
-                TableTestResult => TableTestResult.IDTest,
-                (tableTest, tableTestResult) =>
-                new { TableTest = tableTest, TableTestResult = tableTestResult })
-                .Where(joined => joined.TableTest.IDFunction == IDFunction)
-                .Where(joined => joined.TableTestResult.IDText == IDText);
+            var tab = conn.TableTestResult.OrderBy(x => x.FullTime).ToList();
 
-            var TestsAndTestResultsAndPCs = TestsAndTestResults.Join(conn.TablePC,
-                TestsAndTestResults_ => TestsAndTestResults_.TableTest.IDPC,
-                TablePC => TablePC.IDPC,
-                (testsAndTestResults, tablePC) =>
-                new { TestsAndTestResults = testsAndTestResults, TablePC = tablePC })
-                .OrderBy(x => x.TestsAndTestResults.TableTestResult.FullTime)
-                .ToList();
             ///Adding numeration to listView
             List<object> lista = new List<object>();
-            foreach (var item in TestsAndTestResultsAndPCs)
+            foreach (var item in tab)
             {
-                var index = TestsAndTestResultsAndPCs.FindIndex
-                    (x => x.TestsAndTestResults.TableTestResult.IDTestResult == item.TestsAndTestResults.TableTestResult.IDTestResult);
+                var index = tab.FindIndex
+                    (x => x.IDTestResult == item.IDTestResult);
                 /*
                 var newObj = new { Index = index + 1,
                     TestsAndTestResults = item.TestsAndTestResults,
                     TablePC = item.TablePC };
                 */
                 ///*
-                var splited = item.TestsAndTestResults.TableTestResult.FullTime.Split(new char[] { ',', '.' });
+                var splited = item.FullTime.Split(new char[] { ',', '.' });
                 Thread.CurrentThread.CurrentCulture = new CultureInfo("hr-HR");
                 var time = TimeSpan.Parse("0:0:0" + splited[0].ToString() + "," + splited[1].ToString());
-                var points = CalculatePoints(item.TestsAndTestResults.TableTestResult.NumberOfIterations, time);
+                var points = CalculatePoints(item.NumberOfIterations, time);
                 var newObj = new
                 {
                     Index = index + 1,
                     Points = points,
-                    TestsAndTestResults = item.TestsAndTestResults,
-                    TablePC = item.TablePC
+                    TableTestResult = item
                 };
-                //*/
-
                 lista.Add(newObj);
 
                 //find user position in ranking
-                if (newObj.TestsAndTestResults.TableTest.IDTest == IDTest)
+                if (newObj.TableTestResult.IDTest == IDTest)
                 { TxtBlockScore.Text = newObj.Index.ToString(); }
             }
 

@@ -26,9 +26,9 @@
                 <GridView>
                     <GridViewColumn Header="No." DisplayMemberBinding="{Binding Index}"/>
                     <GridViewColumn Header="Points" DisplayMemberBinding="{Binding Points}"/>
-                    <GridViewColumn Header="CPU" DisplayMemberBinding="{Binding TablePC.TableCPU.CPUName}" />
-                    <GridViewColumn Header="RAM Frequency [MHz]" DisplayMemberBinding="{Binding TablePC.TableRAM.RAMFrequency}" />
-                    <GridViewColumn Header="RAM Capacity [GB]" DisplayMemberBinding="{Binding TablePC.TableRAM.RAMCapacity}" />
+                    <GridViewColumn Header="CPU" DisplayMemberBinding="{Binding TableTestResult.TableTest.TablePC.TableCPU.CPUName}" />
+                    <GridViewColumn Header="RAM Frequency [MHz]" DisplayMemberBinding="{Binding TableTestResult.TableTest.TablePC.TableRAM.RAMFrequency}" />
+                    <GridViewColumn Header="RAM Capacity [GB]" DisplayMemberBinding="{Binding TableTestResult.TableTest.TablePC.TableRAM.RAMCapacity}" />
                 </GridView>
             </ListView.View>
         </ListView>
