@@ -423,7 +423,7 @@ namespace OESK
             var listOfTimes = new List<TimeSpan>();
             try
             {
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 30; i++)
                 {
                     TimeSpan CalcTime = new TimeSpan();
                     switch (function)
@@ -443,7 +443,6 @@ namespace OESK
                 //Add best result to UI Table/List
                 var tableCalcParams = new TableCalcParams(function, textLength, numberOfIterations, bestTime);
                 IDTest = SaveTestToDatabase(IDPC, IDFunction, IDText, tableCalcParams);
-                TxtBlockFullTime.Text = tableCalcParams.TestTimeInSeconds;
                 TxtBlockPoints.Text = CalculatePoints(numberOfIterations, bestTime).ToString() + " pkt";
                 //var win2 = new ResultsWindow(IDFunction, IDText);
                 //win2.Show();
@@ -479,15 +478,23 @@ namespace OESK
             {
                 var index = TestsAndTestResultsAndPCs.FindIndex
                     (x => x.TestsAndTestResults.TableTestResult.IDTestResult == item.TestsAndTestResults.TableTestResult.IDTestResult);
-                var newObj = new { Index = index + 1,
-                    TestsAndTestResults = item.TestsAndTestResults, TablePC = item.TablePC, };
                 /*
+                var newObj = new { Index = index + 1,
+                    TestsAndTestResults = item.TestsAndTestResults,
+                    TablePC = item.TablePC };
+                */
+                ///*
+                var splited = item.TestsAndTestResults.TableTestResult.FullTime.Split(',');
+                var time = TimeSpan.Parse("0:0:0" + splited[0].ToString() + "," + splited[1].ToString());
+                var points = CalculatePoints(item.TestsAndTestResults.TableTestResult.NumberOfIterations, time);
                 var newObj = new
                 {
                     Index = index + 1,
-                    Points = CalculatePoints(item.TestsAndTestResults.TableTestResult.NumberOfIterations, new TimeSpan(item.TestsAndTestResults.TableTestResult.FullTime),
-                 TestsAndTestResults = item.TestsAndTestResults, TablePC = item.TablePC, };
-                 */
+                    Points = points,
+                    TestsAndTestResults = item.TestsAndTestResults,
+                    TablePC = item.TablePC
+                };
+                //*/
 
                 lista.Add(newObj);
 

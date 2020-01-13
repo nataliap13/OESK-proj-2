@@ -12,9 +12,6 @@
         <TextBlock Text="Funkcja skrótu" HorizontalAlignment="Left" TextAlignment="Center" Margin="123,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="80"/>
         <ComboBox Name="CmbBxFunction" Loaded="CmbBxFunction_Loaded" SelectionChanged="CmbBxFunction_SelectionChanged" HorizontalAlignment="Left" Margin="123,35,0,0" VerticalAlignment="Top" Width="80" Height="20"/>
 
-        <TextBlock Text="Czas testu" HorizontalAlignment="Left" TextAlignment="Center" Margin="208,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="70"/>
-        <TextBlock Name="TxtBlockFullTime" Text="" HorizontalAlignment="Left" Margin="208,35,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="70"/>
-
         <TextBlock Text="Ocena" HorizontalAlignment="Left" Margin="337,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="37"/>
         <TextBlock Name="TxtBlockPoints" Text="0 pkt" HorizontalAlignment="Left" Margin="379,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="73"/>
 
@@ -27,8 +24,8 @@
         <ListView Name="ListViewMain" Margin="10,60,10,10">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="No." DisplayMemberBinding="{Binding Index}" Width="40"/>
-                    <GridViewColumn Header="Test Time [s]" DisplayMemberBinding="{Binding TestsAndTestResults.TableTestResult.FullTime}" />
+                    <GridViewColumn Header="No." DisplayMemberBinding="{Binding Index}"/>
+                    <GridViewColumn Header="Points" DisplayMemberBinding="{Binding Points}"/>
                     <GridViewColumn Header="CPU" DisplayMemberBinding="{Binding TablePC.TableCPU.CPUName}" />
                     <GridViewColumn Header="RAM Frequency [MHz]" DisplayMemberBinding="{Binding TablePC.TableRAM.RAMFrequency}" />
                     <GridViewColumn Header="RAM Capacity [GB]" DisplayMemberBinding="{Binding TablePC.TableRAM.RAMCapacity}" />

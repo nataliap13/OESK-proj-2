@@ -14,13 +14,14 @@ namespace OESK
         public string TestTimeInSeconds { get; private set; }
         public TimeSpan TestTimeInSecondsAsTimeSpan { get; private set; }
 
-        public TableCalcParams(string functionName, int textLength, int NumberOfIterations,
+        public TableCalcParams(string functionName, int textLength, int numberOfIterations,
             TimeSpan testTime)
         {
             FunctionName = functionName;
             TextLength = textLength;
             TestTimeInSecondsAsTimeSpan = testTime;
             TestTimeInSeconds = TimeSpanConverter.ToSecondsMiliseconds(testTime);
+            NumberOfIterations = numberOfIterations;
         }
 
         private static TimeSpan LongTicksToTimespan(long value)
