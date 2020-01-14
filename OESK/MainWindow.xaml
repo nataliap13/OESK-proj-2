@@ -32,7 +32,7 @@
             </ListView.View>
         </ListView>
 
-        <Grid Margin="10,0,10,10" Height="280" VerticalAlignment="Bottom">
+        <Grid Margin="10,0,0,10" Height="280" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="510">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0"/>
                 <RowDefinition/>
@@ -50,7 +50,7 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <local:CharUserControl x:Name="Col1" Background="White" MaxValue="100" Color="Green" Value="0" Margin="5" Grid.Row="0"/>
-                                <TextBlock x:Name="ColTxt1" TextAlignment="Center" FontSize="30" Text="PC1" TextWrapping="Wrap" Margin="0,0,0,0" Grid.Row="1"/>
+                                <TextBlock Name="ColTxt1" TextAlignment="Center" FontSize="13" Text="PC1" TextWrapping="Wrap" Margin="0,0,0,0" Grid.Row="1"/>
                             </Grid>
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -58,7 +58,7 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <local:CharUserControl x:Name="Col2" Background="White" MaxValue="100" Color="Red" Value="0" Margin="5" Grid.Row="0"/>
-                                <TextBlock x:Name="ColTxt2" TextAlignment="Center" FontSize="30" Text="PC2" TextWrapping="Wrap" Margin="0,0,0,0" Grid.Row="1"/>
+                                <TextBlock x:Name="ColTxt2" TextAlignment="Center" FontSize="13" Text="PC2" TextWrapping="Wrap" Margin="0,0,0,0" Grid.Row="1"/>
                             </Grid>
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -66,7 +66,7 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <local:CharUserControl x:Name="Col3" Background="White" MaxValue="100" Color="Green" Value="0" Margin="5" Grid.Row="0"/>
-                                <TextBlock x:Name="ColTxt3" TextAlignment="Center" FontSize="30" Text="PC3" TextWrapping="Wrap" Margin="0,0,0,0" Grid.Row="1"/>
+                                <TextBlock x:Name="ColTxt3" TextAlignment="Center" FontSize="13" Text="PC3" TextWrapping="Wrap" Margin="0,0,0,0" Grid.Row="1"/>
                             </Grid>
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -74,7 +74,7 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <local:CharUserControl x:Name="Col4" Background="White" MaxValue="100" Color="Red" Value="0" Margin="5" Grid.Row="0"/>
-                                <TextBlock x:Name="ColTxt4" TextAlignment="Center" FontSize="30" Text="PC4" TextWrapping="Wrap" Margin="0,0,0,0" Grid.Row="1"/>
+                                <TextBlock x:Name="ColTxt4" TextAlignment="Center" FontSize="13" Text="PC4" TextWrapping="Wrap" Margin="0,0,0,0" Grid.Row="1"/>
                             </Grid>
                             <Grid Name="LastGrid">
                                 <Grid.RowDefinitions>
@@ -82,12 +82,19 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <local:CharUserControl x:Name="Col5" Background="White" MaxValue="100" Color="Green" Value="0" Margin="5" Grid.Row="0"/>
-                                <TextBlock x:Name="ColTxt5" TextAlignment="Center" FontSize="30" Text="PC5" TextWrapping="Wrap" Margin="0,0,0,0" Grid.Row="1"/>
+                                <TextBlock Name="ColTxt5" TextAlignment="Center" FontSize="13" Text="PC5" TextWrapping="Wrap" Margin="0,0,0,0" Grid.Row="1"/>
                             </Grid>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
             </Border>
         </Grid>
+        <StackPanel Orientation="Vertical" Height="280" VerticalAlignment="Bottom" Margin="520,0,10,10">
+            <TextBlock TextAlignment="Left" Name="Descr1" FontSize="20" Text="PC1" TextWrapping="Wrap"/>
+            <TextBlock TextAlignment="Left" Name="Descr2" FontSize="20" Text="PC2" TextWrapping="Wrap"/>
+            <TextBlock TextAlignment="Left" Name="Descr3" FontSize="20" Text="PC3" TextWrapping="Wrap"/>
+            <TextBlock TextAlignment="Left" Name="Descr4" FontSize="20" Text="PC4" TextWrapping="Wrap"/>
+            <TextBlock TextAlignment="Left" Name="Descr5" FontSize="20" Text="PC5" TextWrapping="Wrap"/>
+        </StackPanel>
     </Grid>
 </Window>

@@ -89,10 +89,11 @@ namespace OESK
                     //MessageBox.Show(i + " " + points);
                     columns[i].MaxValue = max;
                     columns[i].Value = points;
-                    if (points == myPoints)
-                    { labels[i].Text = "Me"; }
-                    else
-                    { labels[i].Text = "PC" + (i + 1); }
+                    //if (points == myPoints)
+                    //{ labels[i].Text = "Mój PC"; }
+                    //else
+                    //{ labels[i].Text = "PC" + (i + 1); }
+                    { labels[i].Text = "Lepszy niż\n" + list[i].Key + "%\n komputerów"; }
                 }
 
                 LastGrid.Visibility = Visibility.Hidden;
@@ -102,44 +103,7 @@ namespace OESK
             catch (Exception e)
             { }
         }
-        /*
-        private void ShowChart(Dictionary<double, TableTest> dict)
-        {
-            try
-            {
-                var list = dict.OrderBy(x => x.Key).ToList();
-                var max = CalculatePoints(list.Last().Value.NumberOfIterations, list.Last().Value.FullTime);
-                Title.Text = "Ranking";
 
-                //tak sam dla Col2 Col3 itd...
-                chart.Col1.MaxValue = max;
-                chart.Col1.Value = CalculatePoints(list[0].Value.NumberOfIterations, list[0].Value.FullTime);
-                //chart.Col1.Color = Brushes.Green;
-                chart.Col1.Color = Brushes.CadetBlue;
-
-                chart.Col2.MaxValue = max;
-                chart.Col2.Value = CalculatePoints(list[1].Value.NumberOfIterations, list[1].Value.FullTime);
-                chart.Col2.Color = Brushes.Coral;
-
-                chart.Col3.MaxValue = max;
-                chart.Col3.Value = CalculatePoints(list[2].Value.NumberOfIterations, list[2].Value.FullTime);
-                //chart.Col3.Color = Brushes.Azure;
-                chart.Col3.Color = Brushes.BurlyWood;
-
-                chart.Col4.MaxValue = max;
-                chart.Col4.Value = CalculatePoints(list[3].Value.NumberOfIterations, list[3].Value.FullTime);
-                chart.Col4.Color = Brushes.Chocolate;
-
-                chart.Col5.MaxValue = max;
-                chart.Col5.Value = CalculatePoints(list[4].Value.NumberOfIterations, list[4].Value.FullTime);
-                chart.Col5.Color = Brushes.CornflowerBlue;
-            }
-            catch (Exception e)
-            { }
-
-            chart.Show();
-        }
-        */
         #region CmbBxFunction
         private void CmbBxFunction_Loaded(object sender, RoutedEventArgs e)
         {
