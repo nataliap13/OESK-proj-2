@@ -36,11 +36,11 @@ namespace OESK
         private int IDCPU = 0;
         private int IDRAM = 0;
         private int IDPC = 0;
+        Chart chart = new Chart();
 
         public MainWindow()
         {
             InitializeComponent();
-            ShowChart();
 
             ReadPCConfiguration(out CPUName, out RAMCapacity, out RAMFrequency);
             IDCPU = SearchForIDCPUInDatabaseAddIfNotExist(CPUName);
@@ -48,15 +48,41 @@ namespace OESK
             IDPC = SearchForIDPCInDatabaseAddIfNotExist(IDCPU, IDRAM);
         }
 
-        private void ShowChart()
+        private void ShowChart(Dictionary<double, TableTest> dict)
         {
-            var chart = new Chart();
-            chart.Title.Text = "Ranking";
+            chart.Close();
+            chart = new Chart();
+            try
+            {
+                var list = dict.OrderBy(x => x.Key).ToList();
+                var max = CalculatePoints(list.Last().Value.NumberOfIterations, list.Last().Value.FullTime);
+                chart.Title.Text = "Ranking";
 
-            //tak sam dla Col2 Col3 itd...
-            chart.Col1.MaxValue = 300;
-            chart.Col1.Value = 250;
-            chart.Col1.Color = Brushes.Green;
+                //tak sam dla Col2 Col3 itd...
+                chart.Col1.MaxValue = max;
+                chart.Col1.Value = CalculatePoints(list[0].Value.NumberOfIterations, list[0].Value.FullTime);
+                //chart.Col1.Color = Brushes.Green;
+                chart.Col1.Color = Brushes.CadetBlue;
+
+                chart.Col2.MaxValue = max;
+                chart.Col2.Value = CalculatePoints(list[1].Value.NumberOfIterations, list[1].Value.FullTime);
+                chart.Col2.Color = Brushes.Coral;
+
+                chart.Col3.MaxValue = max;
+                chart.Col3.Value = CalculatePoints(list[2].Value.NumberOfIterations, list[2].Value.FullTime);
+                //chart.Col3.Color = Brushes.Azure;
+                chart.Col3.Color = Brushes.BurlyWood;
+
+                chart.Col4.MaxValue = max;
+                chart.Col4.Value = CalculatePoints(list[3].Value.NumberOfIterations, list[3].Value.FullTime);
+                chart.Col4.Color = Brushes.Chocolate;
+
+                chart.Col5.MaxValue = max;
+                chart.Col5.Value = CalculatePoints(list[4].Value.NumberOfIterations, list[4].Value.FullTime);
+                chart.Col5.Color = Brushes.CornflowerBlue;
+            }
+            catch (Exception e)
+            { }
 
             chart.Show();
         }
@@ -81,7 +107,8 @@ namespace OESK
             var text = new String('A', textLength);
             int IDText = SearchForIDTextInDatabaseAddIfNotExist(text);
 
-            DownloadAllDBResults(IDFunction, IDText, 0);
+            var foundObjects = new Dictionary<double, TableTest>();
+            DownloadAllDBResults(IDFunction, IDText, 0, out foundObjects, out int temp);
         }
         #endregion
 
@@ -370,7 +397,7 @@ namespace OESK
             var listOfTimes = new List<TimeSpan>();
             try
             {
-                for (int i = 0; i < 30; i++)
+                for (int i = 0; i < 3; i++)
                 {
                     TimeSpan CalcTime = new TimeSpan();
                     switch (function)
@@ -392,7 +419,9 @@ namespace OESK
                 IDTest = SaveTestToDatabase(IDPC, IDFunction, IDText, tableCalcParams);
                 TxtBlockPoints.Text = CalculatePoints(numberOfIterations, bestTime).ToString() + " pkt";
 
-                DownloadAllDBResults(IDFunction, IDText, IDTest);
+                var foundObjects = new Dictionary<double, TableTest>();
+                DownloadAllDBResults(IDFunction, IDText, IDTest, out foundObjects, out int temp);
+                ShowChart(foundObjects);
             }
             catch (Exception ex)
             { MessageBox.Show("Error: " + ex.Message); MessageBox.Show(ex.InnerException.Message); }
@@ -400,16 +429,23 @@ namespace OESK
 
         private double CalculatePoints(int numberOfIterations, TimeSpan time)
         { return Math.Round((Convert.ToDouble(numberOfIterations) / time.TotalSeconds), 0); }
+        private double CalculatePoints(int numberOfIterations, string timeAsString)
+        {
+            var time = ParseTimeFromString(timeAsString);
+            return Math.Round((Convert.ToDouble(numberOfIterations) / time.TotalSeconds), 0);
+        }
 
-        private void DownloadAllDBResults(int IDFunction, int IDText, int IDTest)
+        private void DownloadAllDBResults(int IDFunction, int IDText, int IDTest,
+            out Dictionary<double, TableTest> foundObjects, out int numberOfAll)
         {
             var tab = conn.TableTest.Where(x => x.IDFunction == IDFunction)
                 .Where(x => x.IDText == IDText)
                 .OrderBy(x => x.FullTime).ToList();
 
-            var numberOfAll = tab.Count();
+            numberOfAll = tab.Count();
 
-            var foundObjects = new Dictionary<double, TableTest>();
+            //var foundObjects = new Dictionary<double, TableTest>();
+            foundObjects = new Dictionary<double, TableTest>();
             var searchingPositions = new List<int>();
             searchingPositions.Add(Convert.ToInt32(numberOfAll * 3 / 4));//in 3/4 from top
             searchingPositions.Add(Convert.ToInt32(numberOfAll / 2));//in 1/2 from top
@@ -422,15 +458,8 @@ namespace OESK
             {
                 var index = tab.FindIndex
                     (x => x.IDTest == item.IDTest);
-                /*
-                var newObj = new { Index = index + 1,
-                    TestsAndTestResults = item.TestsAndTestResults,
-                    TablePC = item.TablePC };
-                */
-                ///*
-                var splited = item.FullTime.Split(new char[] { ',', '.' });
-                Thread.CurrentThread.CurrentCulture = new CultureInfo("hr-HR");
-                var time = TimeSpan.Parse("0:0:0" + splited[0].ToString() + "," + splited[1].ToString());
+
+                var time = ParseTimeFromString(item.FullTime);
                 var points = CalculatePoints(item.NumberOfIterations, time);
                 var newObj = new
                 {
@@ -440,26 +469,35 @@ namespace OESK
                 };
                 lista.Add(newObj);
 
+                int percent = Convert.ToInt32(Math.Round((numberOfAll - index) * 100.0 / numberOfAll, 0));//100%
+
                 //find user position in ranking
                 if (newObj.TableTest.IDTest == IDTest)
                 {
                     TxtBlockScore.Text = newObj.Index.ToString();
-                    foundObjects.Add(newObj.Index, newObj.TableTest);
+                    foundObjects.Add(percent, newObj.TableTest);
 
-                    if (searchingPositions.Contains(newObj.Index))//do not duplicate same position
-                    { searchingPositions.Remove(newObj.Index); }
+                    //if (searchingPositions.Contains(newObj.Index))//do not duplicate same position
+                    //{ searchingPositions.Remove(newObj.Index); }
                 }
                 else
                 {
                     if (searchingPositions.Contains(newObj.Index))
                     {
-                        foundObjects.Add(newObj.Index, newObj.TableTest);
+                        foundObjects.Add(percent, newObj.TableTest);
                         searchingPositions.Remove(newObj.Index);
                     }
                 }
             }
             ListViewMain.ItemsSource = lista;
             return;
+        }
+
+        private TimeSpan ParseTimeFromString(string timeAsString)
+        {
+            var splited = timeAsString.Split(new char[] { ',', '.' });
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("hr-HR");
+            return TimeSpan.Parse("0:0:0" + splited[0].ToString() + "," + splited[1].ToString());
         }
 
         private void BtnMyPC_Click(object sender, RoutedEventArgs e)
