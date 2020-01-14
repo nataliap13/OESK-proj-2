@@ -36,7 +36,6 @@ namespace OESK
         private int IDCPU = 0;
         private int IDRAM = 0;
         private int IDPC = 0;
-        Chart chart = new Chart();
 
         public MainWindow()
         {
@@ -50,13 +49,46 @@ namespace OESK
 
         private void ShowChart(Dictionary<double, TableTest> dict)
         {
-            chart.Close();
-            chart = new Chart();
             try
             {
                 var list = dict.OrderBy(x => x.Key).ToList();
                 var max = CalculatePoints(list.Last().Value.NumberOfIterations, list.Last().Value.FullTime);
-                chart.Title.Text = "Ranking";
+                //Title.Text = "Ranking";
+
+                //tak sam dla Col2 Col3 itd...
+                Col1.MaxValue = max;
+                Col1.Value = CalculatePoints(list[0].Value.NumberOfIterations, list[0].Value.FullTime);
+                //chart.Col1.Color = Brushes.Green;
+                Col1.Color = Brushes.CadetBlue;
+
+                Col2.MaxValue = max;
+                Col2.Value = CalculatePoints(list[1].Value.NumberOfIterations, list[1].Value.FullTime);
+                Col2.Color = Brushes.Coral;
+
+                Col3.MaxValue = max;
+                Col3.Value = CalculatePoints(list[2].Value.NumberOfIterations, list[2].Value.FullTime);
+                //chart.Col3.Color = Brushes.Azure;
+                Col3.Color = Brushes.BurlyWood;
+
+                Col4.MaxValue = max;
+                Col4.Value = CalculatePoints(list[3].Value.NumberOfIterations, list[3].Value.FullTime);
+                Col4.Color = Brushes.Chocolate;
+
+                Col5.MaxValue = max;
+                Col5.Value = CalculatePoints(list[4].Value.NumberOfIterations, list[4].Value.FullTime);
+                Col5.Color = Brushes.CornflowerBlue;
+            }
+            catch (Exception e)
+            { }
+        }
+        /*
+        private void ShowChart(Dictionary<double, TableTest> dict)
+        {
+            try
+            {
+                var list = dict.OrderBy(x => x.Key).ToList();
+                var max = CalculatePoints(list.Last().Value.NumberOfIterations, list.Last().Value.FullTime);
+                Title.Text = "Ranking";
 
                 //tak sam dla Col2 Col3 itd...
                 chart.Col1.MaxValue = max;
@@ -86,7 +118,7 @@ namespace OESK
 
             chart.Show();
         }
-
+        */
         #region CmbBxFunction
         private void CmbBxFunction_Loaded(object sender, RoutedEventArgs e)
         {
