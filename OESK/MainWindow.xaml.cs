@@ -36,47 +36,68 @@ namespace OESK
         private int IDCPU = 0;
         private int IDRAM = 0;
         private int IDPC = 0;
+        private List<CharUserControl> columns = new List<CharUserControl>();
+        private List<TextBlock> labels = new List<TextBlock>();
 
         public MainWindow()
         {
             InitializeComponent();
-
+            SetChartInitParams();
             ReadPCConfiguration(out CPUName, out RAMCapacity, out RAMFrequency);
             IDCPU = SearchForIDCPUInDatabaseAddIfNotExist(CPUName);
             IDRAM = SearchForIDRAMInDatabaseAddIfNotExist(RAMCapacity, RAMFrequency);
             IDPC = SearchForIDPCInDatabaseAddIfNotExist(IDCPU, IDRAM);
         }
+        private void SetChartInitParams()
+        {
+            columns.Add(Col1);
+            columns.Add(Col2);
+            columns.Add(Col3);
+            columns.Add(Col4);
+            columns.Add(Col5);
+            labels.Add(ColTxt1);
+            labels.Add(ColTxt2);
+            labels.Add(ColTxt3);
+            labels.Add(ColTxt4);
+            labels.Add(ColTxt5);
+            Col1.Color = Brushes.CadetBlue;
+            Col2.Color = Brushes.Coral;
+            Col3.Color = Brushes.BurlyWood;
+            Col4.Color = Brushes.Chocolate;
+            Col5.Color = Brushes.CornflowerBlue;
+        }
+        private void ResetChartParams()
+        {
+            foreach (var col in columns)
+            { col.Value = 0; col.MaxValue = 0; }
+            foreach (var lab in labels)
+            { lab.Text = string.Empty; }
+        }
 
-        private void ShowChart(Dictionary<double, TableTest> dict)
+        private void ShowChart(List<KeyValuePair<double, TableTest>> list, double myPoints)
         {
             try
             {
-                var list = dict.OrderBy(x => x.Key).ToList();
+                ResetChartParams();
+                list = list.OrderBy(x => x.Key).ToList();
                 var max = CalculatePoints(list.Last().Value.NumberOfIterations, list.Last().Value.FullTime);
                 //Title.Text = "Ranking";
 
-                //tak sam dla Col2 Col3 itd...
-                Col1.MaxValue = max;
-                Col1.Value = CalculatePoints(list[0].Value.NumberOfIterations, list[0].Value.FullTime);
-                //chart.Col1.Color = Brushes.Green;
-                Col1.Color = Brushes.CadetBlue;
+                for (int i = 0; i < list.Count; i++)
+                {
+                    var points = CalculatePoints(list[i].Value.NumberOfIterations, list[i].Value.FullTime);
+                    //MessageBox.Show(i + " " + points);
+                    columns[i].MaxValue = max;
+                    columns[i].Value = points;
+                    if (points == myPoints)
+                    { labels[i].Text = "Me"; }
+                    else
+                    { labels[i].Text = "PC" + (i + 1); }
+                }
 
-                Col2.MaxValue = max;
-                Col2.Value = CalculatePoints(list[1].Value.NumberOfIterations, list[1].Value.FullTime);
-                Col2.Color = Brushes.Coral;
-
-                Col3.MaxValue = max;
-                Col3.Value = CalculatePoints(list[2].Value.NumberOfIterations, list[2].Value.FullTime);
-                //chart.Col3.Color = Brushes.Azure;
-                Col3.Color = Brushes.BurlyWood;
-
-                Col4.MaxValue = max;
-                Col4.Value = CalculatePoints(list[3].Value.NumberOfIterations, list[3].Value.FullTime);
-                Col4.Color = Brushes.Chocolate;
-
-                Col5.MaxValue = max;
-                Col5.Value = CalculatePoints(list[4].Value.NumberOfIterations, list[4].Value.FullTime);
-                Col5.Color = Brushes.CornflowerBlue;
+                LastGrid.Visibility = Visibility.Hidden;
+                if (columns.Last().Value != 0)
+                { LastGrid.Visibility = Visibility.Visible; }
             }
             catch (Exception e)
             { }
@@ -139,8 +160,8 @@ namespace OESK
             var text = new String('A', textLength);
             int IDText = SearchForIDTextInDatabaseAddIfNotExist(text);
 
-            var foundObjects = new Dictionary<double, TableTest>();
-            DownloadAllDBResults(IDFunction, IDText, 0, out foundObjects, out int temp);
+            var foundObjects = new List<KeyValuePair<double, TableTest>>();
+            DownloadAllDBResults(IDFunction, IDText, 0, out foundObjects);
         }
         #endregion
 
@@ -417,6 +438,13 @@ namespace OESK
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
+            //for (int i = 0; i < 100; i++)
+            //{
+            Test();
+            //}
+        }
+        private void Test()
+        {
             var begin = DateTime.Now;
             var function = CmbBxFunction.SelectionBoxItem.ToString();
             var IDFunction = SearchForIDFunctionInDatabaseAddIfNotExist(function);
@@ -429,7 +457,7 @@ namespace OESK
             var listOfTimes = new List<TimeSpan>();
             try
             {
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 30; i++)
                 {
                     TimeSpan CalcTime = new TimeSpan();
                     switch (function)
@@ -449,11 +477,12 @@ namespace OESK
                 //Add best result to UI Table/List
                 var tableCalcParams = new TableCalcParams(function, textLength, numberOfIterations, bestTime);
                 IDTest = SaveTestToDatabase(IDPC, IDFunction, IDText, tableCalcParams);
-                TxtBlockPoints.Text = CalculatePoints(numberOfIterations, bestTime).ToString() + " pkt";
+                var myPoints = CalculatePoints(numberOfIterations, bestTime);
+                TxtBlockPoints.Text = myPoints + " pkt";
 
-                var foundObjects = new Dictionary<double, TableTest>();
-                DownloadAllDBResults(IDFunction, IDText, IDTest, out foundObjects, out int temp);
-                ShowChart(foundObjects);
+                var foundObjects = new List<KeyValuePair<double, TableTest>>();
+                DownloadAllDBResults(IDFunction, IDText, IDTest, out foundObjects);
+                ShowChart(foundObjects, myPoints);
             }
             catch (Exception ex)
             { MessageBox.Show("Error: " + ex.Message); MessageBox.Show(ex.InnerException.Message); }
@@ -467,17 +496,17 @@ namespace OESK
             return Math.Round((Convert.ToDouble(numberOfIterations) / time.TotalSeconds), 0);
         }
 
-        private void DownloadAllDBResults(int IDFunction, int IDText, int IDTest,
-            out Dictionary<double, TableTest> foundObjects, out int numberOfAll)
+        private void DownloadAllDBResults(int myIDFunction, int myIDText, int myIDTest,
+            out List<KeyValuePair<double, TableTest>> foundObjects)
         {
-            var tab = conn.TableTest.Where(x => x.IDFunction == IDFunction)
-                .Where(x => x.IDText == IDText)
+            var tab = conn.TableTest.Where(x => x.IDFunction == myIDFunction)
+                .Where(x => x.IDText == myIDText)
                 .OrderBy(x => x.FullTime).ToList();
 
-            numberOfAll = tab.Count();
+            int numberOfAll = tab.Count();
 
             //var foundObjects = new Dictionary<double, TableTest>();
-            foundObjects = new Dictionary<double, TableTest>();
+            foundObjects = new List<KeyValuePair<double, TableTest>>();
             var searchingPositions = new List<int>();
             searchingPositions.Add(Convert.ToInt32(numberOfAll * 3 / 4));//in 3/4 from top
             searchingPositions.Add(Convert.ToInt32(numberOfAll / 2));//in 1/2 from top
@@ -504,10 +533,10 @@ namespace OESK
                 int percent = Convert.ToInt32(Math.Round((numberOfAll - index) * 100.0 / numberOfAll, 0));//100%
 
                 //find user position in ranking
-                if (newObj.TableTest.IDTest == IDTest)
+                if (newObj.TableTest.IDTest == myIDTest)
                 {
                     TxtBlockScore.Text = newObj.Index.ToString();
-                    foundObjects.Add(percent, newObj.TableTest);
+                    foundObjects.Add(new KeyValuePair<double, TableTest>(percent, newObj.TableTest));
 
                     //if (searchingPositions.Contains(newObj.Index))//do not duplicate same position
                     //{ searchingPositions.Remove(newObj.Index); }
@@ -516,7 +545,7 @@ namespace OESK
                 {
                     if (searchingPositions.Contains(newObj.Index))
                     {
-                        foundObjects.Add(percent, newObj.TableTest);
+                        foundObjects.Add(new KeyValuePair<double, TableTest>(percent, newObj.TableTest));
                         searchingPositions.Remove(newObj.Index);
                     }
                 }
