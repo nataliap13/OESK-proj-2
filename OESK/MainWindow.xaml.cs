@@ -51,13 +51,12 @@ namespace OESK
         private void ShowChart()
         {
             var chart = new Chart();
-            chart.Title.Text = "Tytul wykresu";
+            chart.Title.Text = "Ranking";
 
             //tak sam dla Col2 Col3 itd...
             chart.Col1.MaxValue = 300;
             chart.Col1.Value = 250;
             chart.Col1.Color = Brushes.Green;
-
 
             chart.Show();
         }
@@ -147,49 +146,6 @@ namespace OESK
             catch (Exception)
             { }
         }
-        /*
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {//sprawdzenie wszystkich mozliwosci PC.
-        //W linkach sa kody ktore nalezy podac podczas tworzenia ManagementClass aby dostać info o PC
-            var listOfCalcResults = new List<TableCalcParams>();
-            var templist = new List<TimeSpan>();
-            templist.Add(new TimeSpan(1));
-            try
-            {
-                //Win32_Processor Name
-                //Win32_PhysicalMemory Manufacturer, Part Number, Speed, Capacity suma/1024/1024/1024
-                //Win32_MemoryArray Ending address /1024/1024
-                //https://www.codeguru.com/columns/dotnet/using-c-to-find-out-what-your-computer-is-made-of.html
-                //https://docs.microsoft.com/pl-pl/windows/win32/cimwin32prov/computer-system-hardware-classes?redirectedfrom=MSDN
-                ManagementClass myManagementClass = new ManagementClass(pole.Text);
-                ManagementObjectCollection myManagementCollection = myManagementClass.GetInstances();
-                PropertyDataCollection myProperties = myManagementClass.Properties;
-                int i = 0;
-                foreach (ManagementObject obj in myManagementCollection)
-                {
-                    foreach (PropertyData property in myProperties)
-                    {
-                        try
-                        {
-                            listOfCalcResults.Add(new TableCalcParams(property.Name, i, templist));
-                        }
-                        catch (Exception)
-                        { }
-                        try
-                        {
-                            listOfCalcResults.Add(new TableCalcParams(obj.Properties[property.Name].Value.ToString(), i, templist));
-                        }
-                        catch (Exception)
-                        { }
-                        i++;
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            { MessageBox.Show(ex.Message); }
-            ListViewMain.ItemsSource = listOfCalcResults;
-        }*/
 
         private string buildHashString(byte[] data)
         {
@@ -281,36 +237,6 @@ namespace OESK
             timeSpan = stopWatch.Elapsed;
             return;
         }
-        /*
-        private void someOldStartFuntion_Click(object sender, RoutedEventArgs e)
-        {
-            var begin = DateTime.Now;
-            TimeSpan MD5Time;
-            TimeSpan SHA1Time;
-            TimeSpan SHA256Time;
-            var text = UserTxtBox.Text;
-            var IDText = SearchForTextInDatabaseAddIfNotExists(text);
-
-            string hash = GetMd5Hash(ref text, out MD5Time);
-            MD5TxtBlockHash.Text = hash;
-            MD5TxtBlockTime.Text = ((int)MD5Time.TotalSeconds).ToString() + ","
-                + String.Format("{0:fffffff}", MD5Time); ;
-            //MD5TxtBlockTime.Text = String.Format("{0:mm\\:ss\\:fffffff}", timeOfCalculation);
-
-            hash = GetSHA1Hash(ref text, out SHA1Time);
-            SHA1TxtBlockHash.Text = hash;
-            SHA1TxtBlockTime.Text = ((int)SHA1Time.TotalSeconds).ToString() + ","
-                + String.Format("{0:fffffff}", SHA1Time);
-            //SHA1TxtBlockTime.Text = String.Format("{0:mm\\:ss\\:fffffff}", timeOfCalculation);
-
-            hash = GetSHA256Hash(ref text, out SHA256Time);
-            SHA256TxtBlockHash.Text = hash;
-            SHA256TxtBlockTime.Text = ((int)SHA256Time.TotalSeconds).ToString() + ","
-                + String.Format("{0:fffffff}", SHA256Time);
-            //SHA256TxtBlockTime.Text = String.Format("{0:mm\\:ss\\:fffffff}", timeOfCalculation);
-            SaveTestToDatabase(ref IDText, ref MD5Time, ref SHA1Time, ref SHA256Time);
-            TxtBlockFullTime.Text = (DateTime.Now - begin).ToString();
-        }*/
 
         private int SaveTestToDatabase(int IDPC, int IDFunction, int IDText, TableCalcParams tableCalcParams)
         {
@@ -532,7 +458,6 @@ namespace OESK
                     }
                 }
             }
-            //ListViewMain.ItemsSource = TestsAndTestResultsAndPCs;
             ListViewMain.ItemsSource = lista;
             return;
         }
