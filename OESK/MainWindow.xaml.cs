@@ -38,11 +38,14 @@ namespace OESK
         private int IDPC = 0;
         private List<CharUserControl> columns = new List<CharUserControl>();
         private List<TextBlock> labels = new List<TextBlock>();
+        private List<TextBlock> descriptions = new List<TextBlock>();
+        private List<Grid> grids = new List<Grid>();
 
         public MainWindow()
         {
             InitializeComponent();
             SetChartInitParams();
+            ResetChartParams();
             ReadPCConfiguration(out CPUName, out RAMCapacity, out RAMFrequency);
             IDCPU = SearchForIDCPUInDatabaseAddIfNotExist(CPUName);
             IDRAM = SearchForIDRAMInDatabaseAddIfNotExist(RAMCapacity, RAMFrequency);
@@ -60,6 +63,16 @@ namespace OESK
             labels.Add(ColTxt3);
             labels.Add(ColTxt4);
             labels.Add(ColTxt5);
+            descriptions.Add(Descr1);
+            descriptions.Add(Descr2);
+            descriptions.Add(Descr3);
+            descriptions.Add(Descr4);
+            descriptions.Add(Descr5);
+            grids.Add(Grid1);
+            grids.Add(Grid2);
+            grids.Add(Grid3);
+            grids.Add(Grid4);
+            grids.Add(Grid5);
             Col1.Color = Brushes.CadetBlue;
             Col2.Color = Brushes.Coral;
             Col3.Color = Brushes.BurlyWood;
@@ -72,6 +85,18 @@ namespace OESK
             { col.Value = 0; col.MaxValue = 0; }
             foreach (var lab in labels)
             { lab.Text = string.Empty; }
+            foreach (var grid in grids)
+            { grid.Visibility = Visibility.Hidden; }
+            foreach (var desc in descriptions)
+            { desc.Visibility = Visibility.Hidden; }
+        }
+
+        private string GetDescriptionPCString(KeyValuePair<double, TableTest> item)
+        {
+            return " - Lepszy niż " + item.Key + "% komputerów\n"
+                + item.Value.TablePC.TableCPU.CPUName
+                + "\n" + item.Value.TablePC.TableRAM.RAMCapacity + " GB RAM "
+                + item.Value.TablePC.TableRAM.RAMFrequency + "MHz\n";
         }
 
         private void ShowChart(List<KeyValuePair<double, TableTest>> list, double myPoints)
@@ -89,16 +114,27 @@ namespace OESK
                     //MessageBox.Show(i + " " + points);
                     columns[i].MaxValue = max;
                     columns[i].Value = points;
-                    //if (points == myPoints)
-                    //{ labels[i].Text = "Mój PC"; }
-                    //else
-                    //{ labels[i].Text = "PC" + (i + 1); }
-                    { labels[i].Text = "Lepszy niż\n" + list[i].Key + "%\n komputerów"; }
+                    if (points == myPoints)
+                    {
+                        labels[i].Text = "Mój PC";
+                        descriptions[i].Text = "Mój PC " + GetDescriptionPCString(list[i]);
+                    }
+                    else
+                    {
+                        labels[i].Text = "PC" + (i + 1);
+                        descriptions[i].Text = "PC" + (i + 1) + " " + GetDescriptionPCString(list[i]);
+                    }
+                    //{ labels[i].Text = "Lepszy niż\n" + list[i].Key + "%\n komputerów"; }
                 }
 
-                LastGrid.Visibility = Visibility.Hidden;
-                if (columns.Last().Value != 0)
-                { LastGrid.Visibility = Visibility.Visible; }
+                for (int i = 0; i < grids.Count; i++)
+                {
+                    if (columns[i].Value != 0)
+                    {
+                        grids[i].Visibility = Visibility.Visible;
+                        descriptions[i].Visibility = Visibility.Visible;
+                    }
+                }
             }
             catch (Exception e)
             { }
@@ -126,6 +162,7 @@ namespace OESK
 
             var foundObjects = new List<KeyValuePair<double, TableTest>>();
             DownloadAllDBResults(IDFunction, IDText, 0, out foundObjects);
+            ShowChart(foundObjects, 0);
         }
         #endregion
 
@@ -525,6 +562,7 @@ namespace OESK
             return TimeSpan.Parse("0:0:0" + splited[0].ToString() + "," + splited[1].ToString());
         }
 
+        /*
         private void BtnMyPC_Click(object sender, RoutedEventArgs e)
         {
             string CPUName;
@@ -534,5 +572,6 @@ namespace OESK
             MessageBox.Show("CPU: " + CPUName + "\nRAM Capacity: "
                 + RAMCapacity + " GB\nRAM Frequency: " + RAMFrequency + " MHz");
         }
+        */
     }
 }
