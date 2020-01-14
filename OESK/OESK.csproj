@@ -91,6 +91,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Chart.xaml.cs">
+      <DependentUpon>Chart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CharUserControl.xaml.cs">
+      <DependentUpon>CharUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MySQLiteDbContext.cs" />
     <Compile Include="SQLiteConfiguration.cs" />
     <Compile Include="TableCalcParams.cs" />
@@ -101,6 +107,14 @@
     <Compile Include="TableTest.cs" />
     <Compile Include="TableText.cs" />
     <Compile Include="TimeSpanConverter.cs" />
+    <Page Include="Chart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CharUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

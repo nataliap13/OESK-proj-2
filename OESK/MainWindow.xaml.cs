@@ -40,11 +40,26 @@ namespace OESK
         public MainWindow()
         {
             InitializeComponent();
+            ShowChart();
 
             ReadPCConfiguration(out CPUName, out RAMCapacity, out RAMFrequency);
             IDCPU = SearchForIDCPUInDatabaseAddIfNotExist(CPUName);
             IDRAM = SearchForIDRAMInDatabaseAddIfNotExist(RAMCapacity, RAMFrequency);
             IDPC = SearchForIDPCInDatabaseAddIfNotExist(IDCPU, IDRAM);
+        }
+
+        private void ShowChart()
+        {
+            var chart = new Chart();
+            chart.Title.Text = "Tytul wykresu";
+
+            //tak sam dla Col2 Col3 itd...
+            chart.Col1.MaxValue = 300;
+            chart.Col1.Value = 250;
+            chart.Col1.Color = Brushes.Green;
+
+
+            chart.Show();
         }
 
         #region CmbBxFunction
