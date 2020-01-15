@@ -1,0 +1,378 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="OeskBenchmarkModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="TableCPU">
+          <Key>
+            <PropertyRef Name="IDCPU" />
+          </Key>
+          <Property Name="IDCPU" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CPUName" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TableFunction">
+          <Key>
+            <PropertyRef Name="IDFunction" />
+          </Key>
+          <Property Name="IDFunction" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FunctionName" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TablePC">
+          <Key>
+            <PropertyRef Name="IDPC" />
+          </Key>
+          <Property Name="IDPC" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IDCPU" Type="int" Nullable="false" />
+          <Property Name="IDRAM" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TableRAM">
+          <Key>
+            <PropertyRef Name="IDRAM" />
+          </Key>
+          <Property Name="IDRAM" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RAMCapacity" Type="int" Nullable="false" />
+          <Property Name="RAMFrequency" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TableTest">
+          <Key>
+            <PropertyRef Name="IDTest" />
+          </Key>
+          <Property Name="IDTest" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IDPC" Type="int" Nullable="false" />
+          <Property Name="IDFunction" Type="int" Nullable="false" />
+          <Property Name="IDText" Type="int" Nullable="false" />
+          <Property Name="NumberOfIterations" Type="int" Nullable="false" />
+          <Property Name="FullTime" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TableText">
+          <Key>
+            <PropertyRef Name="IDText" />
+          </Key>
+          <Property Name="IDText" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Text" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__TablePC__IDCPU__693CA210">
+          <End Role="TableCPU" Type="Self.TableCPU" Multiplicity="1" />
+          <End Role="TablePC" Type="Self.TablePC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableCPU">
+              <PropertyRef Name="IDCPU" />
+            </Principal>
+            <Dependent Role="TablePC">
+              <PropertyRef Name="IDCPU" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TablePC__IDRAM__6A30C649">
+          <End Role="TableRAM" Type="Self.TableRAM" Multiplicity="1" />
+          <End Role="TablePC" Type="Self.TablePC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableRAM">
+              <PropertyRef Name="IDRAM" />
+            </Principal>
+            <Dependent Role="TablePC">
+              <PropertyRef Name="IDRAM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TableTest__IDFun__6FE99F9F">
+          <End Role="TableFunction" Type="Self.TableFunction" Multiplicity="1" />
+          <End Role="TableTest" Type="Self.TableTest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableFunction">
+              <PropertyRef Name="IDFunction" />
+            </Principal>
+            <Dependent Role="TableTest">
+              <PropertyRef Name="IDFunction" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TableTest__IDPC__6EF57B66">
+          <End Role="TablePC" Type="Self.TablePC" Multiplicity="1" />
+          <End Role="TableTest" Type="Self.TableTest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TablePC">
+              <PropertyRef Name="IDPC" />
+            </Principal>
+            <Dependent Role="TableTest">
+              <PropertyRef Name="IDPC" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TableTest__IDTex__70DDC3D8">
+          <End Role="TableText" Type="Self.TableText" Multiplicity="1" />
+          <End Role="TableTest" Type="Self.TableTest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableText">
+              <PropertyRef Name="IDText" />
+            </Principal>
+            <Dependent Role="TableTest">
+              <PropertyRef Name="IDText" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="OeskBenchmarkModelStoreContainer">
+          <EntitySet Name="TableCPU" EntityType="Self.TableCPU" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TableFunction" EntityType="Self.TableFunction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TablePC" EntityType="Self.TablePC" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TableRAM" EntityType="Self.TableRAM" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TableTest" EntityType="Self.TableTest" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TableText" EntityType="Self.TableText" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__TablePC__IDCPU__693CA210" Association="Self.FK__TablePC__IDCPU__693CA210">
+            <End Role="TableCPU" EntitySet="TableCPU" />
+            <End Role="TablePC" EntitySet="TablePC" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TablePC__IDRAM__6A30C649" Association="Self.FK__TablePC__IDRAM__6A30C649">
+            <End Role="TableRAM" EntitySet="TableRAM" />
+            <End Role="TablePC" EntitySet="TablePC" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TableTest__IDFun__6FE99F9F" Association="Self.FK__TableTest__IDFun__6FE99F9F">
+            <End Role="TableFunction" EntitySet="TableFunction" />
+            <End Role="TableTest" EntitySet="TableTest" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TableTest__IDPC__6EF57B66" Association="Self.FK__TableTest__IDPC__6EF57B66">
+            <End Role="TablePC" EntitySet="TablePC" />
+            <End Role="TableTest" EntitySet="TableTest" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TableTest__IDTex__70DDC3D8" Association="Self.FK__TableTest__IDTex__70DDC3D8">
+            <End Role="TableText" EntitySet="TableText" />
+            <End Role="TableTest" EntitySet="TableTest" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="OeskBenchmarkModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="TableCPU">
+          <Key>
+            <PropertyRef Name="IDCPU" />
+          </Key>
+          <Property Name="IDCPU" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CPUName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="TablePC" Relationship="Self.FK__TablePC__IDCPU__693CA210" FromRole="TableCPU" ToRole="TablePC" />
+        </EntityType>
+        <EntityType Name="TableFunction">
+          <Key>
+            <PropertyRef Name="IDFunction" />
+          </Key>
+          <Property Name="IDFunction" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FunctionName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="TableTest" Relationship="Self.FK__TableTest__IDFun__6FE99F9F" FromRole="TableFunction" ToRole="TableTest" />
+        </EntityType>
+        <EntityType Name="TablePC">
+          <Key>
+            <PropertyRef Name="IDPC" />
+          </Key>
+          <Property Name="IDPC" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IDCPU" Type="Int32" Nullable="false" />
+          <Property Name="IDRAM" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TableCPU" Relationship="Self.FK__TablePC__IDCPU__693CA210" FromRole="TablePC" ToRole="TableCPU" />
+          <NavigationProperty Name="TableRAM" Relationship="Self.FK__TablePC__IDRAM__6A30C649" FromRole="TablePC" ToRole="TableRAM" />
+          <NavigationProperty Name="TableTest" Relationship="Self.FK__TableTest__IDPC__6EF57B66" FromRole="TablePC" ToRole="TableTest" />
+        </EntityType>
+        <EntityType Name="TableRAM">
+          <Key>
+            <PropertyRef Name="IDRAM" />
+          </Key>
+          <Property Name="IDRAM" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RAMCapacity" Type="Int32" Nullable="false" />
+          <Property Name="RAMFrequency" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TablePC" Relationship="Self.FK__TablePC__IDRAM__6A30C649" FromRole="TableRAM" ToRole="TablePC" />
+        </EntityType>
+        <EntityType Name="TableTest">
+          <Key>
+            <PropertyRef Name="IDTest" />
+          </Key>
+          <Property Name="IDTest" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IDPC" Type="Int32" Nullable="false" />
+          <Property Name="IDFunction" Type="Int32" Nullable="false" />
+          <Property Name="IDText" Type="Int32" Nullable="false" />
+          <Property Name="NumberOfIterations" Type="Int32" Nullable="false" />
+          <Property Name="FullTime" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="TableFunction" Relationship="Self.FK__TableTest__IDFun__6FE99F9F" FromRole="TableTest" ToRole="TableFunction" />
+          <NavigationProperty Name="TablePC" Relationship="Self.FK__TableTest__IDPC__6EF57B66" FromRole="TableTest" ToRole="TablePC" />
+          <NavigationProperty Name="TableText" Relationship="Self.FK__TableTest__IDTex__70DDC3D8" FromRole="TableTest" ToRole="TableText" />
+        </EntityType>
+        <EntityType Name="TableText">
+          <Key>
+            <PropertyRef Name="IDText" />
+          </Key>
+          <Property Name="IDText" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Text" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="TableTest" Relationship="Self.FK__TableTest__IDTex__70DDC3D8" FromRole="TableText" ToRole="TableTest" />
+        </EntityType>
+        <Association Name="FK__TablePC__IDCPU__693CA210">
+          <End Role="TableCPU" Type="Self.TableCPU" Multiplicity="1" />
+          <End Role="TablePC" Type="Self.TablePC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableCPU">
+              <PropertyRef Name="IDCPU" />
+            </Principal>
+            <Dependent Role="TablePC">
+              <PropertyRef Name="IDCPU" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TableTest__IDFun__6FE99F9F">
+          <End Role="TableFunction" Type="Self.TableFunction" Multiplicity="1" />
+          <End Role="TableTest" Type="Self.TableTest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableFunction">
+              <PropertyRef Name="IDFunction" />
+            </Principal>
+            <Dependent Role="TableTest">
+              <PropertyRef Name="IDFunction" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TablePC__IDRAM__6A30C649">
+          <End Role="TableRAM" Type="Self.TableRAM" Multiplicity="1" />
+          <End Role="TablePC" Type="Self.TablePC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableRAM">
+              <PropertyRef Name="IDRAM" />
+            </Principal>
+            <Dependent Role="TablePC">
+              <PropertyRef Name="IDRAM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TableTest__IDPC__6EF57B66">
+          <End Role="TablePC" Type="Self.TablePC" Multiplicity="1" />
+          <End Role="TableTest" Type="Self.TableTest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TablePC">
+              <PropertyRef Name="IDPC" />
+            </Principal>
+            <Dependent Role="TableTest">
+              <PropertyRef Name="IDPC" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TableTest__IDTex__70DDC3D8">
+          <End Role="TableText" Type="Self.TableText" Multiplicity="1" />
+          <End Role="TableTest" Type="Self.TableTest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableText">
+              <PropertyRef Name="IDText" />
+            </Principal>
+            <Dependent Role="TableTest">
+              <PropertyRef Name="IDText" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="OeskBenchmarkEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="TableCPU" EntityType="Self.TableCPU" />
+          <EntitySet Name="TableFunction" EntityType="Self.TableFunction" />
+          <EntitySet Name="TablePC" EntityType="Self.TablePC" />
+          <EntitySet Name="TableRAM" EntityType="Self.TableRAM" />
+          <EntitySet Name="TableTest" EntityType="Self.TableTest" />
+          <EntitySet Name="TableText" EntityType="Self.TableText" />
+          <AssociationSet Name="FK__TablePC__IDCPU__693CA210" Association="Self.FK__TablePC__IDCPU__693CA210">
+            <End Role="TableCPU" EntitySet="TableCPU" />
+            <End Role="TablePC" EntitySet="TablePC" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TableTest__IDFun__6FE99F9F" Association="Self.FK__TableTest__IDFun__6FE99F9F">
+            <End Role="TableFunction" EntitySet="TableFunction" />
+            <End Role="TableTest" EntitySet="TableTest" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TablePC__IDRAM__6A30C649" Association="Self.FK__TablePC__IDRAM__6A30C649">
+            <End Role="TableRAM" EntitySet="TableRAM" />
+            <End Role="TablePC" EntitySet="TablePC" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TableTest__IDPC__6EF57B66" Association="Self.FK__TableTest__IDPC__6EF57B66">
+            <End Role="TablePC" EntitySet="TablePC" />
+            <End Role="TableTest" EntitySet="TableTest" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TableTest__IDTex__70DDC3D8" Association="Self.FK__TableTest__IDTex__70DDC3D8">
+            <End Role="TableText" EntitySet="TableText" />
+            <End Role="TableTest" EntitySet="TableTest" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="OeskBenchmarkModelStoreContainer" CdmEntityContainer="OeskBenchmarkEntities">
+          <EntitySetMapping Name="TableCPU">
+            <EntityTypeMapping TypeName="OeskBenchmarkModel.TableCPU">
+              <MappingFragment StoreEntitySet="TableCPU">
+                <ScalarProperty Name="IDCPU" ColumnName="IDCPU" />
+                <ScalarProperty Name="CPUName" ColumnName="CPUName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TableFunction">
+            <EntityTypeMapping TypeName="OeskBenchmarkModel.TableFunction">
+              <MappingFragment StoreEntitySet="TableFunction">
+                <ScalarProperty Name="IDFunction" ColumnName="IDFunction" />
+                <ScalarProperty Name="FunctionName" ColumnName="FunctionName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TablePC">
+            <EntityTypeMapping TypeName="OeskBenchmarkModel.TablePC">
+              <MappingFragment StoreEntitySet="TablePC">
+                <ScalarProperty Name="IDPC" ColumnName="IDPC" />
+                <ScalarProperty Name="IDCPU" ColumnName="IDCPU" />
+                <ScalarProperty Name="IDRAM" ColumnName="IDRAM" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TableRAM">
+            <EntityTypeMapping TypeName="OeskBenchmarkModel.TableRAM">
+              <MappingFragment StoreEntitySet="TableRAM">
+                <ScalarProperty Name="IDRAM" ColumnName="IDRAM" />
+                <ScalarProperty Name="RAMCapacity" ColumnName="RAMCapacity" />
+                <ScalarProperty Name="RAMFrequency" ColumnName="RAMFrequency" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TableTest">
+            <EntityTypeMapping TypeName="OeskBenchmarkModel.TableTest">
+              <MappingFragment StoreEntitySet="TableTest">
+                <ScalarProperty Name="IDTest" ColumnName="IDTest" />
+                <ScalarProperty Name="IDPC" ColumnName="IDPC" />
+                <ScalarProperty Name="IDFunction" ColumnName="IDFunction" />
+                <ScalarProperty Name="IDText" ColumnName="IDText" />
+                <ScalarProperty Name="NumberOfIterations" ColumnName="NumberOfIterations" />
+                <ScalarProperty Name="FullTime" ColumnName="FullTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TableText">
+            <EntityTypeMapping TypeName="OeskBenchmarkModel.TableText">
+              <MappingFragment StoreEntitySet="TableText">
+                <ScalarProperty Name="IDText" ColumnName="IDText" />
+                <ScalarProperty Name="Text" ColumnName="Text" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

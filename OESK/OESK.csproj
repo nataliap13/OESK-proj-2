@@ -73,6 +73,8 @@
       <HintPath>..\packages\System.Data.SQLite.Linq.1.0.112.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -91,6 +93,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AzureDB.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AzureDB.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AzureDB.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AzureDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AzureDB.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AzureDB.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Chart.xaml.cs">
       <DependentUpon>Chart.xaml</DependentUpon>
     </Compile>
@@ -100,12 +117,24 @@
     <Compile Include="MySQLiteDbContext.cs" />
     <Compile Include="SQLiteConfiguration.cs" />
     <Compile Include="TableCalcParams.cs" />
-    <Compile Include="TableFunction.cs" />
-    <Compile Include="TableRAM.cs" />
-    <Compile Include="TablePC.cs" />
-    <Compile Include="TableCPU.cs" />
-    <Compile Include="TableTest.cs" />
-    <Compile Include="TableText.cs" />
+    <Compile Include="TableFunction.cs">
+      <DependentUpon>AzureDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TableRAM.cs">
+      <DependentUpon>AzureDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TablePC.cs">
+      <DependentUpon>AzureDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TableCPU.cs">
+      <DependentUpon>AzureDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TableTest.cs">
+      <DependentUpon>AzureDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TableText.cs">
+      <DependentUpon>AzureDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="TimeSpanConverter.cs" />
     <Page Include="Chart.xaml">
       <SubType>Designer</SubType>
@@ -146,6 +175,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EntityDeploy Include="AzureDB.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>AzureDB.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="AzureDB.edmx.diagram">
+      <DependentUpon>AzureDB.edmx</DependentUpon>
+    </None>
     <None Include="db.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -171,6 +207,21 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AzureDB.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>AzureDB.edmx</DependentUpon>
+      <LastGenOutput>AzureDB.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="AzureDB.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>AzureDB.edmx</DependentUpon>
+      <LastGenOutput>AzureDB.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -29,7 +29,7 @@ namespace OESK
         private MD5 md5Hash = MD5.Create();
         private SHA1 sha1Hash = SHA1.Create();
         private SHA256 sha256Hash = SHA256.Create();
-        private MySQLiteDbContext conn = new MySQLiteDbContext();
+        private OeskBenchmarkEntities conn = new OeskBenchmarkEntities();
         private string CPUName;
         private int RAMCapacity = 0;
         private int RAMFrequency = 0;
